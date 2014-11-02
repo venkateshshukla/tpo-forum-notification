@@ -1,0 +1,63 @@
+This is the relevant section of login page of IIT BHU TPO Forum (http://www.iitbhu.ac.in/tpo/forum).
+It contains the form for sending login information to login link (http://www.iitbhu.ac.in/tpo/fprum/ucp.php?mode=login) using a POST request.
+
+================================================================================
+<form action="./ucp.php?mode=login" method="post" id="login">
+  <div class="panel">
+    <div class="inner">
+      <span class="corners-top">
+        <span></span>
+      </span>
+      <div class="content">
+        <h2>Login</h2>
+        <fieldset class="fields1">
+          <dl>
+            <dt><label for="username">Username:</label></dt>
+            <dd><input type="text" tabindex="1" name="username" id="username" size="25" value="" class="inputbox autowidth"></dd>
+          </dl>
+          <dl>
+            <dt><label for="password">Password:</label></dt>
+            <dd><input type="password" tabindex="2" id="password" name="password" size="25" class="inputbox autowidth"></dd>
+            <dd><a href="./ucp.php?mode=sendpassword">I forgot my password</a></dd>
+          </dl>
+          <dl>
+            <dd><label for="autologin"><input type="checkbox" name="autologin" id="autologin" tabindex="4"> Log me on automatically each visit</label></dd>
+            <dd><label for="viewonline"><input type="checkbox" name="viewonline" id="viewonline" tabindex="5"> Hide my online status this session</label></dd>
+          </dl>
+          <input type="hidden" name="redirect" value="./ucp.php?mode=login">
+          <dl>
+            <dt>&nbsp;</dt>
+            <dd><input type="hidden" name="sid" value="0e1199350f81a5bf74ed7e52f0e1debe">
+            <input type="hidden" name="redirect" value="index.php">
+            <input type="submit" name="login" tabindex="6" value="Login" class="button1"></dd>
+          </dl>
+        </fieldset>
+      </div>
+      <span class="corners-bottom"><span></span></span>
+    </div>
+  </div>
+</form>
+================================================================================
+
+If all the visual elements are left out, we are left with this barebones form for logging in to the forum.
+
+================================================================================
+<form action="./ucp.php?mode=login" method="post" id="login">
+  <input type="text" tabindex="1" name="username" id="username" size="25" value="" class="inputbox autowidth">
+  <input type="password" tabindex="2" id="password" name="password" size="25" class="inputbox autowidth">
+  <input type="checkbox" name="autologin" id="autologin" tabindex="4">
+  <input type="checkbox" name="viewonline" id="viewonline" tabindex="5">
+  <input type="hidden" name="sid" value="0e1199350f81a5bf74ed7e52f0e1debe">
+  <input type="hidden" name="redirect" value="index.php">
+  <input type="submit" name="login" tabindex="6" value="Login" class="button1">
+</form>
+================================================================================
+
+As can be seen here, the following information are needed to be sent to login link :
+a. username
+b. password
+c. autologin	// If to be logged in automatically next time.
+d. viewonline	// If hide online status
+e. sid		// Session id
+f. redirect	// Address for redirection after logging in successfully
+
