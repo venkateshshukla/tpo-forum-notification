@@ -1,0 +1,12 @@
+IIT BHU TPO Forum Notification
+===============================
+
+I am trying to make a script to check if any new notifications have arrived on
+the tpo portal.
+
+This is essential because as of now, there is no way to know if any new notice
+has arrived on tpo forum, other than manually checking it over and over.
+
+I have no access to their database and would attempt to do it
+using some web scripts. Let us see where it goes.
+
