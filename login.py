@@ -17,7 +17,7 @@ def get_sid():
 	return sid, cookies
 
 # Using the session id and the cookies, login to the forum using a POST request
-def login(sid, cookies):
+def forum_login(sid, cookies):
 	print "Trying to login to the forum"
 	url = baseurl + "/ucp.php?mode=login"
 	username = "student"
@@ -30,13 +30,13 @@ def login(sid, cookies):
 	payload["password"] = password
 	payload["sid"] = sid
 	payload["redirect"] = redirect
-	payload[login] = login
+	payload["login"] = login
 
 	response = requests.post(url, cookies=cookies, data=payload)
 
 	success_msg = "You have been successfully logged in."
 	if success_msg in response.text:
-		print "You have been successfully logged in."
+		print success_msg
 		return 1, response.cookies
 	else:
 		print "Error during login."
@@ -56,17 +56,22 @@ def get_forum_page(sid, cookies):
 		print "Error retrieving forum page."
 		return 0, None
 
-sid, cookies1 = get_sid()
-r1, cookies2 = login(sid, cookies1)
+# Login and retrieve forum html
+def login():
+	sid, cookies1 = get_sid()
+	r1, cookies2 = login(sid, cookies1)
 
-if r1 == 1:
-	r2, html = get_forum_page(sid, cookies2)
-	if r2 == 1:
-		f = open('forum.html', 'w')
-		f.write(html)
-		f.close()
+	if r1 == 1:
+		r2, html = get_forum_page(sid, cookies2)
+		if r2 == 1:
+			f = open('forum.html', 'w')
+			f.write(html)
+			f.close()
+			return html
+		else:
+			print "Exiting."
+			return None
 	else:
 		print "Exiting."
-else:
-	print "Exiting."
+		return None
 
