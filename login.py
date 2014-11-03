@@ -42,7 +42,31 @@ def login(sid, cookies):
 		print "Error during login."
 		return 0, response.cookies
 
+# Using the session id and login cookies, get the forum page showing notices
+def get_forum_page(sid, cookies):
+	payload = {}
+	payload["sid"] = sid
+	print "Retrieving the forum page."
+	url = baseurl + "/viewforum.php?f=163"
+	response = requests.get(url, cookies=cookies, data=payload)
+	if response.status_code == 200:
+		print "Forum page retrieved."
+		return 1, response.content
+	else:
+		print "Error retrieving forum page."
+		return 0, None
 
-sid, cookies = get_sid()
-r, cookies = login(sid, cookies)
+sid, cookies1 = get_sid()
+r1, cookies2 = login(sid, cookies1)
+
+if r1 == 1:
+	r2, html = get_forum_page(sid, cookies2)
+	if r2 == 1:
+		f = open('forum.html', 'w')
+		f.write(html)
+		f.close()
+	else:
+		print "Exiting."
+else:
+	print "Exiting."
 
