@@ -62,12 +62,12 @@ def get_forum_page(sid, cookies):
 # Login and retrieve forum html
 def login():
 	sid, cookies1 = get_sid()
-	r1, cookies2 = login(sid, cookies1)
+	r1, cookies2 = forum_login(sid, cookies1)
 
 	if r1 == 1:
 		r2, html = get_forum_page(sid, cookies2)
 		if r2 == 1:
-			f = open('forum.html', 'w')
+			f = open('notice_board.html', 'w')
 			f.write(html)
 			f.close()
 			return html
@@ -78,3 +78,5 @@ def login():
 		print "Exiting."
 		return None
 
+if __name__ == "__main__":
+	login()
