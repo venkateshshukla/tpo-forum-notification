@@ -35,6 +35,9 @@ def forum_login(sid, cookies):
 	response = requests.post(url, cookies=cookies, data=payload)
 
 	success_msg = "You have been successfully logged in."
+	if response.status_code != 200:
+		print "Error connecting to the server"
+		return 0, None
 	if success_msg in response.text:
 		print success_msg
 		return 1, response.cookies
