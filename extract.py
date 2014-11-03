@@ -1,5 +1,6 @@
 # Extract useful information from TPO Forum html page
 
+import os.path
 from bs4 import BeautifulSoup
 import bs4
 
@@ -36,13 +37,19 @@ def print_info(info):
 
 
 # Open file notice_board.html and extract all the useful information from it
-def get_notice_list():
+def get_notice_list(p):
+	filename = 'notice_board.html'
+
+	if not os.path.isfile(filename):
+		print "No file with name %s is found. Please run 'python login.py' first"
+		return None
+
 	f = open('notice_board.html', 'r')
 	html = f.read()
 	f.close()
 
 	soup = BeautifulSoup(html)
-	head = soup.body
+
 	div = None
 	for d in soup.find_all("ul"):
 		if 'class' in d.attrs:
@@ -68,8 +75,10 @@ def get_notice_list():
 	info = []
 	for li in list_li:
 		info.append(extract_info(li))
-	#print_info(info)
+	if p:
+		print_info(info)
 	return info
 
+# If run as a standalone script, run get_notice_list printing info
 if __name__ == "__main__":
-	get_notice_list()
+	get_notice_list(True)
