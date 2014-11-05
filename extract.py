@@ -3,6 +3,14 @@
 import os.path
 from bs4 import BeautifulSoup
 import bs4
+import re
+from datetime import datetime
+
+# Get timestamp from a time string
+def get_timestamp(s):
+	s = re.sub('(st|nd|rd|th),', ',', s)
+	d = datetime.strptime(s, "%B %d, %Y, %I:%M %p")
+	return int(d.strftime("%s"))
 
 # Given a list item tag enclosing a description list, extract all its info
 def extract_info(li):
@@ -14,6 +22,7 @@ def extract_info(li):
 	time = time.strip(u'\xbb')
 	time = time.strip()
 	info['time'] = time
+	info['timestamp'] = get_timestamp(time)
 
 	a = dt.find('a')
 	info['title'] = a.text
@@ -30,6 +39,7 @@ def extract_info(li):
 # Print the information extracted from the description list
 def print_info(info):
 	for i in info:
+		print i['timestamp'], '\t\t',
 		print i['time'], '\t\t',
 		print i['link'], '\t\t',
 		print i['attachment'], '\t\t',
@@ -38,15 +48,24 @@ def print_info(info):
 
 # Open file notice_board.html and extract all the useful information from it
 def get_notice_list(p):
-	filename = 'notice_board.html'
-
-	if not os.path.isfile(filename):
-		print "No file with name %s is found. Please run 'python login.py' first"
+	if p is None:
 		return None
+	elif type(p) is unicode or type(p) is str:
+		html = p
+		pr = False
+	elif type(p) is bool:
+		pr = p
+		filename = 'notice_board.html'
 
-	f = open('notice_board.html', 'r')
-	html = f.read()
-	f.close()
+		if not os.path.isfile(filename):
+			print "No file with name %s is found. Please run 'python login.py' first"
+			return None
+
+		f = open('notice_board.html', 'r')
+		html = f.read()
+		f.close()
+	else:
+		return None
 
 	soup = BeautifulSoup(html)
 
@@ -70,7 +89,7 @@ def get_notice_list(p):
 		print "Error getting list items from div topics"
 		return None
 
-	print "Got %d topics in the noticeboard"%len(list_li)
+	print "Retrieved %d topics in the noticeboard"%len(list_li)
 
 	info = []
 	for li in list_li:
