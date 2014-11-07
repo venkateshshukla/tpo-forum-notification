@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Script to get the list of notices and save them locally
 
 import os
@@ -27,16 +28,18 @@ def save_xml(root, notice):
 	else:
 		f.write('0')
 	f.write('</attachment>\n')
-	f.write('</notice>')
+	f.write('</notice>\n')
 	f.close()
 
 
 def insert(root):
 	if root is None:
-		root = "gen"
+		root = os.path.abspath(os.path.dirname(__file__)) + "/gen/xml"
 	if not os.path.isdir(root):
 		os.makedirs(root)
 	notices = extract.get_notice_list(False)
+	if notices is None:
+		return None
 	count = 0
 	for notice in notices:
 
@@ -49,5 +52,7 @@ def insert(root):
 	return count
 
 if __name__ == '__main__':
-	print "Saved %d notices."%insert("gen")
+	num = insert(None)
+	if num is not None:
+		print "Saved %d notices."%num
 

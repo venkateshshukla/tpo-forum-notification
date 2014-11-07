@@ -1,6 +1,9 @@
+#!/usr/bin/env python
 # Script to login to IIT BHU TPO Forum
 
+import os
 import requests
+
 baseurl = "http://www.iitbhu.ac.in/tpo/forum"
 
 # Get session id for logging in the forum.
@@ -61,13 +64,17 @@ def get_forum_page(sid, cookies):
 
 # Login and retrieve forum html
 def login():
+	root = os.path.abspath(os.path.dirname(__file__)) + '/gen'
+	if not os.path.isdir(root):
+		os.makedirs(root)
+	flname = root + '/notice_board.html'
 	sid, cookies1 = get_sid()
 	r1, cookies2 = forum_login(sid, cookies1)
 
 	if r1 == 1:
 		r2, html = get_forum_page(sid, cookies2)
 		if r2 == 1:
-			f = open('notice_board.html', 'w')
+			f = open(flname, 'w')
 			f.write(html)
 			f.close()
 			return html

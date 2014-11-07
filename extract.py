@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Extract useful information from TPO Forum html page
 
 import os.path
@@ -55,13 +56,13 @@ def get_notice_list(p):
 		pr = False
 	elif type(p) is bool:
 		pr = p
-		filename = 'notice_board.html'
+		filename = os.path.abspath(os.path.dirname(__file__)) + '/gen/notice_board.html'
 
 		if not os.path.isfile(filename):
-			print "No file with name %s is found. Please run 'python login.py' first"
+			print "No file with name %s is found. Please run 'python login.py' first"%filename
 			return None
 
-		f = open('notice_board.html', 'r')
+		f = open(filename, 'r')
 		html = f.read()
 		f.close()
 	else:
@@ -89,7 +90,7 @@ def get_notice_list(p):
 		print "Error getting list items from div topics"
 		return None
 
-	print "Retrieved %d topics in the noticeboard"%len(list_li)
+	print "Retrieved %d topics from the noticeboard"%len(list_li)
 
 	info = []
 	for li in list_li:
