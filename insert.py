@@ -33,6 +33,18 @@ def save_xml(path, notice):
 	else:
 		f.write('0')
 	f.write('</attachment>\n')
+	f.write('\t<updated>')
+	if notice['updated']:
+		f.write('1')
+	else:
+		f.write('0')
+	f.write('</updated>\n')
+	f.write('\t<sent>')
+	if notice['sent']:
+		f.write('1')
+	else:
+		f.write('0')
+	f.write('</sent>\n')
 	f.write('</notice>\n')
 	f.close()
 
@@ -47,6 +59,8 @@ def insert_xml(root = None):
 		return None
 	count = 0
 	for notice in notices:
+		notice['updated'] = False
+		notice['sent'] = False
 		path = root + "/" + str(notice['timestamp']) + '.xml'
 		if os.path.isfile(path):
 			continue;
@@ -66,6 +80,8 @@ def insert_json(root = None):
 		return None
 	count = 0
 	for notice in notices:
+		notice['updated'] = False
+		notice['sent'] = False
 		path = root + '/' + str(notice['timestamp']) + '.json'
 		if os.path.isfile(path):
 			continue;
