@@ -6,11 +6,13 @@ import login
 import extract
 import json
 
+# Save the notice in form of json in given path
 def save_json(path, notice):
 	f = open(path, 'w')
 	json.dump(notice, f)
 	f.close()
 
+# Save the notice in form of an xml file in given path
 def save_xml(path, notice):
 	f = open(path, 'w')
 	f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
@@ -49,6 +51,7 @@ def save_xml(path, notice):
 	f.close()
 
 
+# Save the notices as xml in gen/xml folder by parsing gen/notice_board.html
 def insert_xml(root = None):
 	if root is None:
 		root = os.path.abspath(os.path.dirname(__file__)) + "/gen/xml"
@@ -70,6 +73,7 @@ def insert_xml(root = None):
 			save_xml(path, notice);
 	return count
 
+# Save the notices as json in gen/json folder by parsing gen/notice_board.html
 def insert_json(root = None):
 	if root is None:
 		root = os.path.abspath(os.path.dirname(__file__)) + "/gen/json"
@@ -91,12 +95,14 @@ def insert_json(root = None):
 			save_json(path, notice);
 	return count
 
+# Save the notices as fltype in given path
 def insert(root = None, fltype = 'json'):
 	if fltype == 'xml':
 		return insert_xml(root)
 	else:
 		return insert_json(root)
 
+# If run as standalone script, call insert()
 if __name__ == '__main__':
 	num = insert()
 	if num is not None:
