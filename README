@@ -10,3 +10,10 @@ has arrived on tpo forum, other than manually checking it over and over.
 I have no access to their database and would attempt to do it
 using some web scripts. Let us see where it goes.
 
+Dependencies
+============
+
+1. Requests - http://docs.python-requests.org/
+2. BeautifulSoup - http://www.crummy.com/software/BeautifulSoup/
+3. python-crontab - https://pypi.python.org/pypi/python-crontab
+
