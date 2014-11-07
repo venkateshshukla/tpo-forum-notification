@@ -101,6 +101,10 @@ def get_notice_list(p):
 		print_info(info)
 	return info
 
+# Given the html of notice detail page, extract its details and attachment link
+def get_notice_details(html):
+	pass
+
 # If run as a standalone script, run get_notice_list printing info
 if __name__ == "__main__":
 	get_notice_list(True)

@@ -62,6 +62,10 @@ def get_forum_page(sid, cookies):
 		print "Error retrieving forum page."
 		return 0, None
 
+# Get the forum page showing the notice details
+def get_forum_notice(url):
+	pass
+
 # Login and retrieve forum html
 def login():
 	root = os.path.abspath(os.path.dirname(__file__)) + '/gen'
