@@ -27,7 +27,9 @@ def extract_info(li):
 
 	a = dt.find('a')
 	info['title'] = a.text
-	info['link'] = a['href'].strip('\.')
+
+	forum_url = 'http://www.iitbhu.ac.in/tpo/forum'
+	info['url'] = forum_url + a['href'].strip('\.')
 
 	img = dt.find('img')
 	if img is None:

@@ -24,9 +24,9 @@ def save_xml(path, notice):
 	f.write('\t<timestamp>')
 	f.write(str(notice['timestamp']))
 	f.write('</timestamp>\n')
-	f.write('\t<link>')
-	f.write(notice['link'])
-	f.write('</link>\n')
+	f.write('\t<url>')
+	f.write(notice['url'])
+	f.write('</url>\n')
 	f.write('\t<attachment>')
 	if notice['attachment']:
 		f.write('1')
