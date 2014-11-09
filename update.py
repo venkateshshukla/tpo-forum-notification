@@ -32,7 +32,7 @@ def clean_old(path):
 		os.rename(full_path + '/' + f, old_path + '/' + f)
 
 # Given the path of the json file, update it to include detail and attachment
-def update_json(path):
+def update_json(tpo, path):
 	if not os.path.isfile(path):
 		return
 	f = open(path, 'r')
@@ -41,7 +41,6 @@ def update_json(path):
 	notice = json.loads(txt)
 	if notice['updated']:
 		return False
-	tpo = TpoSession()
 	html = tpo.get_forum_notice(notice['url'])
 	if html is None:
 		return False
@@ -51,7 +50,7 @@ def update_json(path):
 	notice['updated'] = True
 	notice['text'] = details['text']
 	if notice['attachment']:
-		notice['attachment-url'] = details['attachment-url']
+		notice['attachment-urls'] = details['attachment-urls']
 	insert.save_json(path, notice)
 	return True
 
@@ -69,8 +68,12 @@ def update():
 	filelist.sort(reverse=True)
 
 	up_count = 0
+	tpo = TpoSession()
+	tpo.start_session()
+	tpo.forum_login()
+	print "Updating notices"
 	for f in filelist:
-		if update_json(dirname + '/' + f):
+		if update_json(tpo, dirname + '/' + f):
 			up_count += 1
 	return up_count
 

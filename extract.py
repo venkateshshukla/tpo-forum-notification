@@ -27,9 +27,7 @@ def extract_info(li):
 
 	a = dt.find('a')
 	info['title'] = a.text
-
-	forum_url = 'http://www.iitbhu.ac.in/tpo/forum'
-	info['url'] = forum_url + a['href'].strip('\.')
+	info['url'] = a['href'].strip('\.')
 
 	img = dt.find('img')
 	if img is None:
@@ -103,6 +101,9 @@ def get_notice_list(p):
 
 # Given the html of notice detail page, extract its details and attachment link
 def get_notice_details(html):
+	f = open('gen/forum_notice.html', 'w')
+	f.write(html)
+	f.close()
 	pass
 
 # If run as a standalone script, run get_notice_list printing info

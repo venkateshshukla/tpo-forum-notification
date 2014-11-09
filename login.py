@@ -5,6 +5,11 @@ import os
 import requests
 
 class TpoSession:
+	"A session for interaction with the TPO Forum"
+
+	login_failed_msg = "The board requires you to be registered and logged in to view this forum."
+	login_success_msg = "You have been successfully logged in."
+
 	def __init__(self):
 		self.baseurl = "http://www.iitbhu.ac.in/tpo/forum"
 		self.username = "student"
@@ -13,7 +18,7 @@ class TpoSession:
 		self.cookies = None
 
 	# Get session id for logging in the forum.
-	def get_sid(self):
+	def start_session(self):
 		print "Starting a new session."
 		url = self.baseurl + "/ucp.php"
 		sid_key = 'iitbhu_phpbb3_sid'
@@ -25,7 +30,6 @@ class TpoSession:
 		print "New session started with session id : ", sid
 		self.sid = sid
 		self.cookies = cookies
-		return sid
 
 	# Using the session id and the cookies, login to the forum using a POST request
 	def forum_login(self):
@@ -42,35 +46,60 @@ class TpoSession:
 
 		response = requests.post(url, cookies=self.cookies, data=payload)
 
-		success_msg = "You have been successfully logged in."
 		if response.status_code != 200:
 			print "Error connecting to the server"
-			return 0, None
-		if success_msg in response.text:
-			print success_msg
+			return False
+		if self.login_success_msg in response.text:
+			print self.login_success_msg
 			self.cookies = response.cookies
-			return 1, response.cookies
+			return True
 		else:
 			print "Error during login."
-			return 0, response.cookies
+			return False
 
 	# Using the session id and login cookies, get the forum page showing notices
 	def get_forum_page(self):
+		if self.sid == None or self.cookies == None:
+			print "Start a new session first using method start_session()"
+			return None
 		payload = {}
 		payload["sid"] = self.sid
 		print "Retrieving the forum page."
 		url = self.baseurl + "/viewforum.php?f=163"
 		response = requests.get(url, cookies=self.cookies, data=payload)
 		if response.status_code == 200:
+			if self.login_failed_msg in response.content:
+				print "Login first by running method forum_login()"
+				return None
 			print "Forum page retrieved."
-			return 1, response.content
+			return response.content
 		else:
 			print "Error retrieving forum page."
-			return 0, None
+			return None
 
 	# Get the forum page showing the notice details
-	def get_forum_notice(self, offset):
-		pass
+	def get_forum_notice(self, offset = None):
+		if offset == None:
+			print "Offset is empty. Include notice url"
+			return None
+		if self.sid == None or self.cookies == None:
+			print "Start a new session first using method start_session()"
+			return None
+		payload = {}
+		payload["sid"] = self.sid
+
+		#print "Retrieving forum notice"
+		url = self.baseurl + offset
+		response = requests.get(url, cookies=self.cookies, data=payload)
+		if response.status_code == 200:
+			if self.login_failed_msg in response.content:
+				print "Login first by running method forum_login()"
+				return None
+			#print "Forum notice retrieved."
+			return response.content
+		else:
+			print "Error retrieving notice page."
+			return None
 
 	# Login and retrieve forum html
 	def login(self):
@@ -78,12 +107,12 @@ class TpoSession:
 		if not os.path.isdir(root):
 			os.makedirs(root)
 		flname = root + '/notice_board.html'
-		sid = self.get_sid()
+		self.start_session()
 		r1 = self.forum_login()
 
-		if r1 == 1:
-			r2, html = self.get_forum_page()
-			if r2 == 1:
+		if r1:
+			html = self.get_forum_page()
+			if html is not None:
 				f = open(flname, 'w')
 				f.write(html)
 				f.close()
