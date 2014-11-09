@@ -31,9 +31,9 @@ def extract_info(li):
 
 	img = dt.find('img')
 	if img is None:
-		info['attachment'] = False
+		info['num_attachments'] = 0
 	else:
-		info['attachment'] = True
+		info['num_attachments'] = 1
 
 	return info
 
@@ -43,7 +43,7 @@ def print_info(info):
 		print i['timestamp'], '\t\t',
 		print i['time'], '\t\t',
 		print i['url'], '\t\t',
-		print i['attachment'], '\t\t',
+		print i['num_attachments'], '\t\t',
 		print i['title']
 
 
@@ -100,11 +100,39 @@ def get_notice_list(p):
 	return info
 
 # Given the html of notice detail page, extract its details and attachment link
-def get_notice_details(html):
-	f = open('gen/forum_notice.html', 'w')
-	f.write(html)
-	f.close()
-	pass
+def get_notice_details(html, attach):
+	if html is None:
+		return
+	soup = BeautifulSoup(html)
+	div = None
+	for d in soup.find_all('div'):
+		if 'class' in d.attrs and d['class'][0] == 'postbody':
+			div = d
+			break
+	if div is None:
+		print "No div with class 'postbody' found"
+		return
+
+	details = {}
+
+	d = div.find('div')
+	e = str(d)
+	f = e.replace('<br/>', '\n')
+	g = BeautifulSoup(f)
+	h = g.text
+	details['text'] = h
+
+	if attach:
+		attachments = []
+		dl = div.find('dl')
+		a_list = dl.find_all('a')
+		for a in a_list:
+			t = {}
+			t['title'] = a.text
+			t['url'] = a['href'].strip('\.')
+			attachments.append(t)
+		details['attachments'] = attachments
+	return details
 
 # If run as a standalone script, run get_notice_list printing info
 if __name__ == "__main__":

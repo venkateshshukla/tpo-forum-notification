@@ -28,12 +28,18 @@ def save_xml(path, notice):
 	f.write('\t<url>')
 	f.write(notice['url'])
 	f.write('</url>\n')
-	f.write('\t<attachment>')
-	if notice['attachment']:
-		f.write('1')
-	else:
-		f.write('0')
-	f.write('</attachment>\n')
+	f,write('\t<text>\n')
+	f.write(notice['text'])
+	f.write('\t</text>\n')
+	f.write('\t<num_attachments>')
+	f.write(notice['num_attachments'])
+	f.write('</num_attachments>\n')
+	if notice['num_attachments'] != 0:
+		f.write('\t<attachments>\n')
+		for a in notice['attachments']:
+			f.write('\t\t<title>{}</title>\n'.format(a['title']))
+			f.write('\t\t<url>{}</url>\n'.format(a['url']))
+		f.write('\t</attachments>\n')
 	f.write('\t<updated>')
 	if notice['updated']:
 		f.write('1')

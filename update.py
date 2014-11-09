@@ -2,6 +2,7 @@
 # Update the json file present in gen/json folder
 
 import os
+import sys
 from bs4 import BeautifulSoup
 import json
 from login import TpoSession
@@ -44,13 +45,14 @@ def update_json(tpo, path):
 	html = tpo.get_forum_notice(notice['url'])
 	if html is None:
 		return False
-	details = extract.get_notice_details(html)
+	details = extract.get_notice_details(html, notice['num_attachments'] == 1)
 	if details is None:
 		return False
 	notice['updated'] = True
 	notice['text'] = details['text']
-	if notice['attachment']:
-		notice['attachment-urls'] = details['attachment-urls']
+	if notice['num_attachments'] == 1:
+		notice['attachments'] = details['attachments']
+		notice['num_attachments'] = len(details['attachments'])
 	insert.save_json(path, notice)
 	return True
 
@@ -65,7 +67,6 @@ def update():
 	clean_old(dirname)
 
 	filelist = os.listdir(dirname)
-	filelist.sort(reverse=True)
 
 	up_count = 0
 	tpo = TpoSession()
@@ -75,10 +76,12 @@ def update():
 	for f in filelist:
 		if update_json(tpo, dirname + '/' + f):
 			up_count += 1
+			sys.stdout.write("\r{} Notices updated.".format(up_count))
+			sys.stdout.flush()
+	print ''
 	return up_count
 
 # If run as a standalone script, run update()
 if __name__ == '__main__':
 	n = update()
-	print "Updated %d notices."%n
 
