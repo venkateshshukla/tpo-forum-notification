@@ -4,10 +4,11 @@
 import os
 from bs4 import BeautifulSoup
 import json
-import login
+from login import TpoSession
 import extract
 import insert
 
+# If more than max_size files present in json, move the old ones to old/
 def clean_old(path):
 	full_path = os.path.abspath(path)
 	if len(full_path) < 9:
@@ -17,22 +18,31 @@ def clean_old(path):
 		return
 	max_size = 25
 	filelist = os.listdir(path)
+	if 'old' in filelist:
+		filelist.remove('old')
 	if len(filelist) <= max_size:
 		print 'No more than %d files present. No cleanup needed.'%max_size
 		return
 	filelist.sort(reverse=True)
 	old_path = full_path + '/old'
+	if not os.path.isdir(old_path):
+		os.makedirs(old_path)
 	for f in filelist[max_size:]:
+		print "Cleaning " + f
 		os.rename(full_path + '/' + f, old_path + '/' + f)
 
+# Given the path of the json file, update it to include detail and attachment
 def update_json(path):
+	if not os.path.isfile(path):
+		return
 	f = open(path, 'r')
 	txt = f.read()
 	f.close()
 	notice = json.loads(txt)
 	if notice['updated']:
 		return False
-	html = login.get_forum_notice(notice['url'])
+	tpo = TpoSession()
+	html = tpo.get_forum_notice(notice['url'])
 	if html is None:
 		return False
 	details = extract.get_notice_details(html)

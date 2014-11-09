@@ -44,7 +44,7 @@ def print_info(info):
 	for i in info:
 		print i['timestamp'], '\t\t',
 		print i['time'], '\t\t',
-		print i['link'], '\t\t',
+		print i['url'], '\t\t',
 		print i['attachment'], '\t\t',
 		print i['title']
 

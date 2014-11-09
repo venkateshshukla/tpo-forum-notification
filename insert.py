@@ -2,7 +2,6 @@
 # Script to get the list of notices and save them locally
 
 import os
-import login
 import extract
 import json
 
