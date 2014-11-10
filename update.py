@@ -32,22 +32,43 @@ def clean_old(path):
 		print "Cleaning " + f
 		os.rename(full_path + '/' + f, old_path + '/' + f)
 
+# Check if the json is erroneous
+def erroneous_json(notice):
+	if notice['title'] == "":
+		return True
+	if notice['time'] == "":
+		return True
+	if notice['url'] == "":
+		return True
+	return False
+
 # Given the path of the json file, update it to include detail and attachment
-def update_json(tpo, path):
+def update_json(tpo, path, sent = None, updated = None):
 	if not os.path.isfile(path):
 		return
 	f = open(path, 'r')
 	txt = f.read()
 	f.close()
 	notice = json.loads(txt)
+	# If the json is erroneous, i.e, has empty fields like topic etc, start
+	# fresh by removing the json file. This way the json will be reloaded at
+	# next cron update.
+	if erroneous_json(notice):
+		os.remove(path)
+		return False
+
+	# If notice is updated, do not update it once more.
 	if notice['updated']:
 		return False
+
 	html = tpo.get_forum_notice(notice['url'])
 	if html is None:
 		return False
+
 	details = extract.get_notice_details(html, notice['num_attachments'] == 1)
 	if details is None:
 		return False
+
 	notice['updated'] = True
 	notice['text'] = details['text']
 	if notice['num_attachments'] == 1:
@@ -78,7 +99,10 @@ def update():
 			up_count += 1
 			sys.stdout.write("\r{} Notices updated.".format(up_count))
 			sys.stdout.flush()
-	print ''
+	if up_count == 0:
+		print '0 Notices updated.'
+	else:
+		print ''
 	return up_count
 
 # If run as a standalone script, run update()
