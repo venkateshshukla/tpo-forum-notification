@@ -20,8 +20,8 @@ def json_text_body(notice):
 						baseurl + a['url'])
 		fstr += "\n\n"
 	else:
-		if notice['attachments'] == 1:
-			fstr += "{} attachments.\n\n".format(notice['attachments'])
+		if notice['num_attachments'] == 1:
+			fstr += "{} attachments.\n\n".format(notice['num_attachments'])
 	fstr += "View page : {}".format(baseurl + notice['url'])
 	return fstr
 
@@ -53,6 +53,7 @@ def view_all_json():
 	root = os.path.abspath(os.path.dirname(__file__))
 	path = root + "/gen/json/"
 	listdir = os.listdir(path)
+	listdir.sort()
 	if 'old' in listdir:
 		listdir.remove('old')
 	for l in listdir:

@@ -120,7 +120,7 @@ def get_notice_details(html, attach):
 	f = e.replace('<br/>', '\n')
 	g = BeautifulSoup(f)
 	h = g.text
-	details['text'] = h
+	details['text'] = h.encode('ascii', 'ignore')
 
 	if attach:
 		attachments = []
