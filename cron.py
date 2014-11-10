@@ -4,6 +4,7 @@
 import os
 from crontab import CronTab
 
+# Add cron jobs to system crontab
 def add_cron():
 	cron = CronTab()
 
