@@ -30,7 +30,7 @@ def sent_false():
 		if not notice['sent']:
 			notice['sent'] = True
 			g = open(path + fl, 'w')
-			json.dumps(notice, g)
+			json.dump(notice, g)
 			g.close()
 
 root = os.path.abspath(os.path.dirname(__file__))
