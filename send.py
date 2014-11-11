@@ -58,7 +58,7 @@ def send_path(path):
 			# sent again.
 			notice['sent'] = True
 			f = open(path, 'w')
-			json.dumps(notice, f)
+			json.dump(notice, f)
 			f.close()
 			return True
 		else:
