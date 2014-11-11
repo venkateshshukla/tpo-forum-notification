@@ -37,5 +37,8 @@ def add_cron():
 			print job
 
 if __name__ == "__main__":
+	from time import strftime
+	print strftime("%Y-%m-%d %H:%M:%S")
+	print __file__
 	add_cron()
 

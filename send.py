@@ -89,5 +89,8 @@ def send_unsent():
 	return send_count
 
 if __name__ == "__main__":
+	from time import strftime
+	print strftime("%Y-%m-%d %H:%M:%S")
+	print __file__
 	s = send_unsent()
 

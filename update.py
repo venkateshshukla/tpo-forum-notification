@@ -49,11 +49,17 @@ def update_json(tpo, path, sent = None, updated = None):
 	f = open(path, 'r')
 	txt = f.read()
 	f.close()
+
+	if txt == "":
+		print "Empty json {}. Deleting.".format(path)
+		return False
+
 	notice = json.loads(txt)
 	# If the json is erroneous, i.e, has empty fields like topic etc, start
 	# fresh by removing the json file. This way the json will be reloaded at
 	# next cron update.
 	if erroneous_json(notice):
+		print "Encountered errnoneous json {}. Deleting.".format(path)
 		os.remove(path)
 		return False
 
@@ -107,5 +113,8 @@ def update():
 
 # If run as a standalone script, run update()
 if __name__ == '__main__':
+	from time import strftime
+	print strftime("%Y-%m-%d %H:%M:%S")
+	print __file__
 	n = update()
 

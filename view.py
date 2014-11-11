@@ -62,5 +62,8 @@ def view_all_json():
 		print "="*80
 
 if __name__ == "__main__":
+	from time import strftime
+	print strftime("%Y-%m-%d %H:%M:%S")
+	print __file__
 	view_all_json()
 

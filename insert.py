@@ -110,6 +110,9 @@ def insert(root = None, fltype = 'json'):
 # If run as standalone script, call insert()
 if __name__ == '__main__':
 	num = insert()
+	from time import strftime
+	print strftime("%Y-%m-%d %H:%M:%S")
+	print __file__
 	if num is not None:
 		print "Saved %d notices."%num
 

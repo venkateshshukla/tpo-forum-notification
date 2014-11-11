@@ -125,5 +125,8 @@ class TpoSession:
 			return None
 
 if __name__ == "__main__":
+	from time import strftime
+	print strftime("%Y-%m-%d %H:%M:%S")
+	print __file__
 	tpo = TpoSession()
 	tpo.login()

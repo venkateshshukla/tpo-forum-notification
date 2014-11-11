@@ -136,4 +136,7 @@ def get_notice_details(html, attach):
 
 # If run as a standalone script, run get_notice_list printing info
 if __name__ == "__main__":
+	from time import strftime
+	print strftime("%Y-%m-%d %H:%M:%S")
+	print __file__
 	get_notice_list(True)
