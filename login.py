@@ -24,12 +24,19 @@ class TpoSession:
 		sid_key = 'iitbhu_phpbb3_sid'
 
 		response = requests.get(url)
+
+		if response.status_code != 200:
+			print "Error : %d"%response.status_code
+			print "Failed to start session. Check network connection."
+			return False
+
 		cookies = response.cookies
 		sid = cookies[sid_key]
 
 		print "New session started with session id : ", sid
 		self.sid = sid
 		self.cookies = cookies
+		return True
 
 	# Using the session id and the cookies, login to the forum using a POST request
 	def forum_login(self):
@@ -107,7 +114,12 @@ class TpoSession:
 		if not os.path.isdir(root):
 			os.makedirs(root)
 		flname = root + '/notice_board.html'
-		self.start_session()
+
+		# Start a TPO session
+		if not self.start_session():
+			print 'Exiting'
+			return None
+
 		r1 = self.forum_login()
 
 		if r1:
