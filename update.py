@@ -85,6 +85,13 @@ def update_json(tpo, name, sent = None, updated = None):
 
 	return True
 
+# Perform an update operation for the given notice name
+def update_name(name):
+	tpo = TpoSession()
+	tpo.start_session()
+	tpo.forum_login()
+	return update_json(tpo, name)
+
 # Perform an update operation for the notices
 def update():
 	if not os.path.isdir(jsondir):

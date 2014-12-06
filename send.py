@@ -9,6 +9,7 @@ import json
 import requests
 
 import view
+import update
 from notice import Notice
 
 root = os.path.abspath(os.path.dirname(__file__))
@@ -55,6 +56,11 @@ def send_name(filename):
 
 	n = Notice(filename)
 	notice = n.get_json()
+
+	# If the notice is not updated, update it.
+	if not notice['updated']:
+		update.update_name(filename)
+		notice = n.get_json()
 
 	# If the notice is not sent, send it.
 	if not notice['sent']:
