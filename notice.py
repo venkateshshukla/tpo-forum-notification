@@ -28,6 +28,8 @@ class Notice:
 	def __init__(self, name):
 		if name is None:
 			raise TpoJsonError("No json filename provided.")
+		name = name.split('/')[-1]
+		name = name.strip('\.json')
 		self.name = name
 		self.filename = name + '.json'
 		self.lockname = name + '.lock'
