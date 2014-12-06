@@ -3,9 +3,9 @@
 # update scripts. Then add cron jobs.
 
 import os
-import json
 import shutil
 
+from notice import Notice
 from login import TpoSession
 import insert
 import update
@@ -22,16 +22,11 @@ def sent_false():
 	if 'old' in listfile:
 		listfile.remove('old')
 	for fl in listfile:
-		f = open(path + fl)
-		txt = f.read()
-		f.close()
-
-		notice = json.loads(txt)
+		n = Notice(fl)
+		notice = n.get_json()
 		if not notice['sent']:
 			notice['sent'] = True
-			g = open(path + fl, 'w')
-			json.dump(notice, g)
-			g.close()
+			n.save_json(notice)
 
 root = os.path.abspath(os.path.dirname(__file__))
 path = root + "/gen"

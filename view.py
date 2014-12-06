@@ -2,7 +2,7 @@
 # Veiw the generated files easily
 
 import os
-import json
+from notice import Notice
 
 # Given json file, return a formatted body to be sent to user
 def json_text_body(notice):
@@ -27,21 +27,16 @@ def json_text_body(notice):
 
 # Given path to json file, return a formatted body string without title
 def json_text_path(path):
-	f = open(path)
-	txt = f.read()
-	f.close()
-
-	notice = json.loads(txt)
+	n = Notice(path)
+	notice = n.get_json()
 	return json_text_body(notice)
 
 # Given path to json file, return a formatted body string with all the details
 def json_text_raw(path):
-	f = open(path)
-	txt = f.read()
-	f.close()
+	n = Notice(path)
+	notice = n.get_json()
 
 	baseurl = "http://www.iitbhu.ac.in/tpo/forum"
-	notice = json.loads(txt)
 	fstr = "{}\n\n{}\n\n".format(notice['title'], json_text_body(notice))
 	fstr += "Number of attachments : {}\n".format(notice['num_attachments'])
 	fstr += "Updated : {}\n".format(notice['updated'])

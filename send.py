@@ -7,7 +7,12 @@
 import os
 import json
 import requests
+
 import view
+from notice import Notice
+
+root = os.path.abspath(os.path.dirname(__file__))
+path = root + "/gen/json/"
 
 # Given a notice, send all the details to channel
 def send_json(notice):
@@ -43,23 +48,21 @@ def send_json(notice):
 		print "Failed,", response.status_code, response.reason
 		return False
 
-# Given path of json file, send a notification.
-def send_path(path):
-	if path is None:
+# Given name of json file, send a notification.
+def send_name(filename):
+	if filename is None:
 		return
-	f = open(path)
-	txt = f.read()
-	f.close()
 
-	notice = json.loads(txt)
+	n = Notice(filename)
+	notice = n.get_json()
+
+	# If the notice is not sent, send it.
 	if not notice['sent']:
 		if send_json(notice):
 			# If notice is sent, save it locally. So that it is not
 			# sent again.
 			notice['sent'] = True
-			f = open(path, 'w')
-			json.dump(notice, f)
-			f.close()
+			n.save_json(notice)
 			return True
 		else:
 			return False
@@ -68,9 +71,7 @@ def send_path(path):
 
 # Check all the json file and sent notifications for unsent messages.
 def send_unsent():
-	root = os.path.abspath(os.path.dirname(__file__))
-	path = root + "/gen/json/"
-
+	'''Send all notices that have not been sent yet.'''
 	filelist = os.listdir(path)
 	if 'old' in filelist:
 		filelist.remove('old')
@@ -79,7 +80,7 @@ def send_unsent():
 
 	send_count = 0
 	for f in filelist:
-		if send_path(path + f):
+		if send_name(f):
 			send_count += 1
 			print "\r%d notifications sent."%send_count
 	if send_count == 0:

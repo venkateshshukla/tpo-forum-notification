@@ -4,10 +4,14 @@
 import os
 import sys
 from bs4 import BeautifulSoup
-import json
 from login import TpoSession
 import extract
 import insert
+from notice import Notice
+
+root = os.path.abspath(os.path.dirname(__file__))
+gendir = root + '/gen/'
+jsondir = gendir + 'json/'
 
 # If more than max_size files present in json, move the old ones to old/
 def clean_old(path):
@@ -43,18 +47,14 @@ def erroneous_json(notice):
 	return False
 
 # Given the path of the json file, update it to include detail and attachment
-def update_json(tpo, path, sent = None, updated = None):
+def update_json(tpo, name, sent = None, updated = None):
+	path = jsondir + name
 	if not os.path.isfile(path):
 		return
-	f = open(path, 'r')
-	txt = f.read()
-	f.close()
 
-	if txt == "":
-		print "Empty json {}. Deleting.".format(path)
-		return False
+	n = Notice(name)
+	notice = n.get_json()
 
-	notice = json.loads(txt)
 	# If the json is erroneous, i.e, has empty fields like topic etc, start
 	# fresh by removing the json file. This way the json will be reloaded at
 	# next cron update.
@@ -80,20 +80,19 @@ def update_json(tpo, path, sent = None, updated = None):
 	if notice['num_attachments'] == 1:
 		notice['attachments'] = details['attachments']
 		notice['num_attachments'] = len(details['attachments'])
-	insert.save_json(path, notice)
+
+	n.save_json(notice)
+
 	return True
 
 # Perform an update operation for the notices
 def update():
-	root = os.path.abspath(os.path.dirname(__file__))
-	dirname = root + '/gen/json'
-
-	if not os.path.isdir(dirname):
+	if not os.path.isdir(jsondir):
 		return
 
-	clean_old(dirname)
+	clean_old(jsondir)
 
-	filelist = os.listdir(dirname)
+	filelist = os.listdir(jsondir)
 
 	up_count = 0
 	tpo = TpoSession()
@@ -101,7 +100,7 @@ def update():
 	tpo.forum_login()
 	print "Updating notices"
 	for f in filelist:
-		if update_json(tpo, dirname + '/' + f):
+		if update_json(tpo, f):
 			up_count += 1
 			sys.stdout.write("\r{} Notices updated.".format(up_count))
 			sys.stdout.flush()

@@ -3,13 +3,7 @@
 
 import os
 import extract
-import json
-
-# Save the notice in form of json in given path
-def save_json(path, notice):
-	f = open(path, 'w')
-	json.dump(notice, f)
-	f.close()
+from notice import Notice
 
 # Save the notices as json in gen/json folder by parsing gen/notice_board.html
 def insert(root = None):
@@ -24,13 +18,15 @@ def insert(root = None):
 	for notice in notices:
 		notice['updated'] = False
 		notice['sent'] = False
-		path = root + '/' + str(notice['timestamp']) + '.json'
+		timestamp = str(notice['timestamp'])
+		path = root + '/' + timestamp + '.json'
 		if os.path.isfile(path):
 			continue;
 		else:
 			count += 1
 			print "Saved notice dated '{}' titled '{}'.".format(notice['time'], notice['title'])
-			save_json(path, notice);
+			n = Notice(timestamp)
+			n.save_json(notice)
 	return count
 
 # If run as standalone script, call insert()
