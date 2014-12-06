@@ -13,10 +13,11 @@ def exists(filename):
 
 def touch(filename):
 	''' Simulate the touch event of linux. Without time stuff'''
-	if os.path.exists(gendir + filename):
-		os.utime(filename, None)
+	pathname = gendir + filename
+	if os.path.exists(pathname):
+		os.utime(pathname, None)
 	else:
-		open(filename, 'a').close()
+		open(pathname, 'a').close()
 
 def remove(filename):
 	''' Remove the file sent by filename.'''
@@ -28,74 +29,54 @@ class Notice:
 		if name is None:
 			raise TpoJsonError("No json filename provided.")
 		self.name = name
+		self.filename = name + '.json'
+		self.lockname = name + '.lock'
 
-	def set_lock(self, name=None):
-		if name is None:
-			name = self.name
-		lockname = name + '.lock'
-		if exists(lockname)
-			raise TpoJsonError("Lock already present for file {}.".format(name))
-		touch(lockname)
+	def set_lock(self):
+		if exists(self.lockname):
+			raise TpoJsonError("Lock already present for file {}.".format(self.name))
+		touch(self.lockname)
 
-	def del_lock(self, name=None):
-		if name is None:
-			name = self.name
-		lockname = name + '.lock'
-		if not exists(lockname):
-			raise TpoJsonError("No lock present for file {}.".format(name))
-		remove(lockname)
+	def del_lock(self):
+		if not exists(self.lockname):
+			raise TpoJsonError("No lock present for file {}.".format(self.name))
+		remove(self.lockname)
 
-	def is_locked(self, name=None):
-		if name is None:
-			name = self.name
-		lockname += '.lock'
-		if exists(lockname):
-			return True
-		else:
-			return False
+	def is_locked(self):
+		return exists(self.lockname)
 
-	def get_json(self, name=None):
-		if name is None:
-			name = self.name
-
-		# Sanity check
-		if name is None:
-			raise TpoJsonError("Null filename.")
-
-		if not os.path.exists(gendir + name):
+	def get_json(self):
+		''' Get the data contained in a JSON file.'''
+		if not exists(self.filename):
 			raise TpoJsonError("Queried JSON file does not exist.")
 
 		# Wait as the file is already in use
-		while is_locked(name):
+		while self.is_locked():
 			pass
 
 		# Extract the data by opening the file
-		set_lock(name)
-		f = open(gendir + name)
+		self.set_lock()
+		f = open(gendir + self.filename, 'r')
 		txt = f.read()
 		f.close()
 		data = json.loads(txt)
-		del_lock(name)
+		self.del_lock()
 		return data
 
-	def set_json(self, name=None, data):
-
+	def save_json(self, data):
+		''' Save the json file in gen folder.'''
 		# Sanity check
 		if data is None:
-			return
-		if name is None:
-			return
-
-		touch(name)
+			return None
 
 		# Wait as the file is already in use
-		while is_locked(name):
+		while self.is_locked():
 			pass
 
 		# Set lock and dump the json
-		set_lock(name)
-		f = open(gendir + name, 'w')
+		self.set_lock()
+		f = open(gendir + self.filename, 'w')
 		json.dump(data, f)
 		f.close()
-		del_lock(name);
+		self.del_lock();
 
