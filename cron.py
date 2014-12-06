@@ -19,15 +19,15 @@ def add_cron():
 
 	cmd_insert = root + '/insert.py'
 	job_insert = cron.new(command=cmd_insert, comment=comment)
-	job_insert.minute.every(2)
+	job_insert.minute.every(1)
 
 	cmd_update = root + '/update.py'
 	job_update = cron.new(command=cmd_update, comment=comment)
-	job_update.minute.every(3)
+	job_update.minute.every(1)
 
 	cmd_send = root + '/send.py'
 	job_send = cron.new(command=cmd_send, comment=comment)
-	job_send.minute.every(5)
+	job_send.minute.every(1)
 
 	cron.write()
 
