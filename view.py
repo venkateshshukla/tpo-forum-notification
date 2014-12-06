@@ -4,6 +4,15 @@
 import os
 from notice import Notice
 
+# Remove redundant tabs
+def clean_tabs(text):
+	lines = text.split('\n')
+	para = ''
+	for line in lines:
+		para += line.strip()
+		para += '\n'
+	return para
+
 # Given json file, return a formatted body to be sent to user
 def json_text_body(notice):
 	baseurl = "http://www.iitbhu.ac.in/tpo/forum"
@@ -20,10 +29,14 @@ def json_text_body(notice):
 						baseurl + a['url'])
 		fstr += "\n\n"
 	else:
-		if notice['num_attachments'] == 1:
+		if notice['num_attachments'] == 0:
+			pass
+		elif notice['num_attachments'] == 1:
+			fstr += "1 attachment.\n\n"
+		else:
 			fstr += "{} attachments.\n\n".format(notice['num_attachments'])
 	fstr += "View page : {}".format(baseurl + notice['url'])
-	return fstr
+	return clean_tabs(fstr)
 
 # Given path to json file, return a formatted body string without title
 def json_text_path(path):
