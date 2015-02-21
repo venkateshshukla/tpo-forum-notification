@@ -13,21 +13,9 @@ def add_cron():
 
 	cron.remove_all(comment=comment)
 
-	cmd_login = root + '/login.py'
-	job_login = cron.new(command=cmd_login, comment=comment)
-	job_login.minute.every(1)
-
-	cmd_insert = root + '/insert.py'
-	job_insert = cron.new(command=cmd_insert, comment=comment)
-	job_insert.minute.every(1)
-
-	cmd_update = root + '/update.py'
-	job_update = cron.new(command=cmd_update, comment=comment)
-	job_update.minute.every(1)
-
-	cmd_send = root + '/send.py'
-	job_send = cron.new(command=cmd_send, comment=comment)
-	job_send.minute.every(1)
+	cmd_run = root + '/run.py'
+	job_run = cron.new(command=cmd_run, comment=comment)
+	job_run.minute.every(1)
 
 	cron.write()
 
