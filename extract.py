@@ -10,7 +10,7 @@ from datetime import datetime
 # Get timestamp from a time string
 def get_timestamp(s):
 	s = re.sub('(st|nd|rd|th),', ',', s)
-	d = datetime.strptime(s, "%B %d, %Y, %I:%M %p")
+	d = datetime.strptime(s, "%a %b %d, %Y %I:%M %p")
 	return int(d.strftime("%s"))
 
 # Given a list item tag enclosing a description list, extract all its info
