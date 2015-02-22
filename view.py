@@ -2,10 +2,13 @@
 # Veiw the generated files easily
 
 import os
+import logging
+
 from notice import Notice
 
 # Remove redundant tabs
 def clean_tabs(text):
+	logging.debug("called : clean_tabs")
 	lines = text.split('\n')
 	para = ''
 	for line in lines:
@@ -15,6 +18,8 @@ def clean_tabs(text):
 
 # Given json file, return a formatted body to be sent to user
 def json_text_body(notice):
+	logging.debug("called : json_text_body")
+	logging.debug("argument notice : %s", str(notice))
 	baseurl = "http://www.iitbhu.ac.in/tpo/forum"
 
 	fstr = notice['time'] + "\n\n"
@@ -40,12 +45,16 @@ def json_text_body(notice):
 
 # Given path to json file, return a formatted body string without title
 def json_text_path(path):
+	logging.debug("called : json_text_path")
+	logging.debug("argument path : %s", path)
 	n = Notice(path)
 	notice = n.get_json()
 	return json_text_body(notice)
 
 # Given path to json file, return a formatted body string with all the details
 def json_text_raw(path):
+	logging.debug("called : json_text_raw")
+	logging.debug("argument path : ", path)
 	n = Notice(path)
 	notice = n.get_json()
 
@@ -58,6 +67,7 @@ def json_text_raw(path):
 
 # Print all the json files present in gen/json
 def view_all_json():
+	logging.debug("called : view_all_json")
 	root = os.path.abspath(os.path.dirname(__file__))
 	path = root + "/gen/json/"
 	listdir = os.listdir(path)
@@ -70,8 +80,12 @@ def view_all_json():
 		print "="*80
 
 if __name__ == "__main__":
-	from time import strftime
-	print strftime("%Y-%m-%d %H:%M:%S")
-	print __file__
+
+	log_level = logging.INFO
+	log_format = "%(asctime)s\t%(levelname)s\t%(filename)s\t%(funcName)s()\t%(message)s"
+	logging.basicConfig(format=log_format, level=log_level)
+
+	logging.debug("starting %s", __file__)
 	view_all_json()
+	logging.debug("finished %s", __file__)
 
