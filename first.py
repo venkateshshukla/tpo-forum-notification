@@ -19,7 +19,7 @@ if not os.path.isdir(log_dir):
 	os.makedirs(log_dir)
 log_level = logging.DEBUG
 log_file = "{}/{}.log".format(log_dir, time.strftime("%Y_%m_%d"))
-log_format = "%(asctime)s\t%(levelname)s\t%(filename)s\t%(funcName)s\t%(message)s"
+log_format = "%(asctime)s\t%(levelname)s\t%(filename)s\t%(funcName)s()\t%(message)s"
 logging.basicConfig(filename=log_file, format=log_format, level=log_level)
 
 # On first run, all the json file will have sent attribute set to false. On

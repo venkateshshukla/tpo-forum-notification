@@ -244,7 +244,7 @@ class TpoSession(object):
 
 if __name__ == "__main__":
 	log_level = logging.INFO
-	log_format = "%(asctime)s\t%(levelname)s\t%(filename)s\t%(funcName)s\t%(message)s"
+	log_format = "%(asctime)s\t%(levelname)s\t%(filename)s\t%(funcName)s()\t%(message)s"
 	logging.basicConfig(format=log_format, level=log_level)
 
 	logging.info("starting %s", __file__)
