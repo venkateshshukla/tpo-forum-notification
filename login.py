@@ -4,7 +4,7 @@
 import os
 import requests
 
-class TpoSession:
+class TpoSession(object):
 	"A session for interaction with the TPO Forum"
 
 	login_failed_msg = "The board requires you to be registered and logged in to view this forum."
@@ -17,40 +17,70 @@ class TpoSession:
 		self.sid = None
 		self.cookies = None
 
-	def __set_baseurl(self, url):
-		self.baseurl = url
+	@property
+	def baseurl(self):
+		return self._baseurl
 
-	def __get_baseurl(self):
-		return self.baseurl
+	@baseurl.setter
+	def baseurl(self, url):
+		self._baseurl = url
 
-	def __set_username(self, name):
-		self.username = name
+	@baseurl.deleter
+	def baseurl(self):
+		del self._baseurl
 
-	def __get_username(self):
-		return self.username
+	@property
+	def username(self):
+		return self._username
 
-	def __set_pwd(self, pwd):
-		self.password = pwd
+	@username.setter
+	def username(self, name):
+		self._username = name
 
-	def __get_pwd(self):
-		return self.password
+	@username.deleter
+	def username(self):
+		del self._username
 
-	def __set_sid(self, sid):
-		self.sid = sid
+	@property
+	def password(self):
+		return self._password
 
-	def __get_sid(self):
-		return self.sid
+	@password.setter
+	def password(self, pwd):
+		self._password = pwd
 
-	def __set_cookies(self, ck):
-		self.cookies = ck
+	@password.deleter
+	def password(self):
+		del self._password
 
-	def __get_cookies(self):
-		return self.cookies
+	@property
+	def sid(self):
+		return self._sid
+
+	@sid.setter
+	def sid(self, x):
+		self._sid = x
+
+	@sid.deleter
+	def sid(self):
+		del self._sid
+
+	@property
+	def cookies(self):
+		return self._cookies
+
+	@cookies.setter
+	def cookies(self, ck):
+		self._cookies = ck
+
+	@cookies.deleter
+	def cookies(self):
+		del self._cookies
 
 	# Get session id for logging in the forum.
 	def start_session(self):
 		print "Starting a new session."
-		url = self.__get_baseurl() + "/ucp.php"
+		url = self.baseurl + "/ucp.php"
 		sid_key = 'iitbhu_phpbb3_sid'
 
 		response = requests.get(url)
@@ -64,31 +94,31 @@ class TpoSession:
 		sid = cookies[sid_key]
 
 		print "New session started with session id : ", sid
-		self.__set_sid(sid)
-		self.__set_cookies(cookies)
+		self.sid = sid
+		self.cookies = cookies
 		return True
 
 	# Using the session id and the cookies, login to the forum using a POST request
 	def forum_login(self):
 		print "Trying to login to the forum"
-		url = self.__get_baseurl() + "/ucp.php?mode=login"
+		url = self.baseurl + "/ucp.php?mode=login"
 		redirect = "/viewforum.php?f=163"
 		login = "login"
 
 		payload = {}
-		payload["username"] = self.__get_username()
-		payload["password"] = self.__get_pwd()
-		payload["sid"] = self.__get_sid()
+		payload["username"] = self.username
+		payload["password"] = self.password
+		payload["sid"] = self.sid
 		payload["login"] = login
 
-		response = requests.post(url, cookies=self.__get_cookies(), data=payload)
+		response = requests.post(url, cookies=self.cookies, data=payload)
 
 		if response.status_code != 200:
 			print "Error connecting to the server"
 			return False
 		if self.login_success_msg in response.text:
 			print self.login_success_msg
-			self.__set_cookies(response.cookies)
+			self.cookies = response.cookies
 			return True
 		else:
 			print "Error during login."
@@ -96,14 +126,14 @@ class TpoSession:
 
 	# Using the session id and login cookies, get the forum page showing notices
 	def get_forum_page(self):
-		if self.__get_sid() == None or self.__get_cookies() == None:
+		if self.sid == None or self.cookies == None:
 			print "Start a new session first using method start_session()"
 			return None
 		payload = {}
-		payload["sid"] = self.__get_sid()
+		payload["sid"] = self.sid
 		print "Retrieving the forum page."
-		url = self.__get_baseurl() + "/viewforum.php?f=163"
-		response = requests.get(url, cookies=self.__get_cookies(), data=payload)
+		url = self.baseurl + "/viewforum.php?f=163"
+		response = requests.get(url, cookies=self.cookies, data=payload)
 		if response.status_code == 200:
 			if self.login_failed_msg in response.content:
 				print "Login first by running method forum_login()"
@@ -119,15 +149,15 @@ class TpoSession:
 		if offset == None:
 			print "Offset is empty. Include notice url"
 			return None
-		if self.__get_sid() == None or self.__get_cookies() == None:
+		if self.sid == None or self.cookies == None:
 			print "Start a new session first using method start_session()"
 			return None
 		payload = {}
-		payload["sid"] = self.__get_sid()
+		payload["sid"] = self.sid
 
 		#print "Retrieving forum notice"
-		url = self.__get_baseurl() + offset
-		response = requests.get(url, cookies=self.__get_cookies(), data=payload)
+		url = self.baseurl + offset
+		response = requests.get(url, cookies=self.cookies, data=payload)
 		if response.status_code == 200:
 			if self.login_failed_msg in response.content:
 				print "Login first by running method forum_login()"
