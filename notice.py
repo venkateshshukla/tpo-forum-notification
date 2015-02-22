@@ -11,14 +11,14 @@ gendir = os.path.abspath(os.path.dirname(__file__)) + "/gen/json/"
 
 def exists(filename):
 	''' Return if the file exists in the gen/json folder'''
-	logging.debug("called : exists")
+	logging.debug("called : %s", __name__)
 	logging.debug("argument filename : %s", filename)
 
 	return os.path.exists(gendir + filename)
 
 def touch(filename):
 	''' Simulate the touch event of linux. Without time stuff'''
-	logging.debug("called : touch")
+	logging.debug("called : %s", __name__)
 	logging.debug("argument filename : %s", filename)
 
 	pathname = gendir + filename
@@ -29,7 +29,7 @@ def touch(filename):
 
 def remove(filename):
 	''' Remove the file sent by filename.'''
-	logging.debug("called : remove")
+	logging.debug("called : %s", __name__)
 	logging.debug("argument filename : %s", filename)
 	os.remove(gendir + filename)
 

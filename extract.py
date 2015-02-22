@@ -10,7 +10,7 @@ import logging
 
 # Get timestamp from a time string
 def get_timestamp(s):
-	logging.debug("called : get_timestamp")
+	logging.debug("called : %s", __name__)
 	logging.debug("argument s : %s", s)
 	s = re.sub('(st|nd|rd|th),', ',', s)
 	d = datetime.strptime(s, "%a %b %d, %Y %I:%M %p")
@@ -18,7 +18,7 @@ def get_timestamp(s):
 
 # Given a list item tag enclosing a description list, extract all its info
 def extract_info(li):
-	logging.debug("called : extract_info")
+	logging.debug("called : %s", __name__)
 	logging.debug("argument li : %s", li)
 
 	dl = li.find('dl')
@@ -45,7 +45,7 @@ def extract_info(li):
 
 # Print the information extracted from the description list
 def print_info(info):
-	logging.debug("called : print_info")
+	logging.debug("called : %s", __name__)
 	for n, i in enumerate(info):
 		print i['timestamp'], '\t\t',
 		print i['time'], '\t\t',
@@ -59,7 +59,7 @@ def print_info(info):
 
 # Open file notice_board.html and extract all the useful information from it
 def get_notice_list(p):
-	logging.debug("called : get_notice_list")
+	logging.debug("called : %s", __name__)
 	logging.debug("argument p : %s", str(p))
 	if p is None:
 		logging.error("empty p is received")
@@ -120,7 +120,7 @@ def get_notice_list(p):
 
 # Given the html of notice detail page, extract its details and attachment link
 def get_notice_details(html, attach):
-	logging.debug("called : get_notice_details")
+	logging.debug("called : %s", __name__)
 	logging.debug("argument attach : %s", attach)
 	if html is None:
 		logging.error("empty html received")

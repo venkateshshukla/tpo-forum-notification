@@ -8,7 +8,7 @@ from notice import Notice
 
 # Remove redundant tabs
 def clean_tabs(text):
-	logging.debug("called : clean_tabs")
+	logging.debug("called : %s", __name__)
 	lines = text.split('\n')
 	para = ''
 	for line in lines:
@@ -18,7 +18,7 @@ def clean_tabs(text):
 
 # Given json file, return a formatted body to be sent to user
 def json_text_body(notice):
-	logging.debug("called : json_text_body")
+	logging.debug("called : %s", __name__)
 	logging.debug("argument notice : %s", str(notice))
 	baseurl = "http://www.iitbhu.ac.in/tpo/forum"
 
@@ -45,7 +45,7 @@ def json_text_body(notice):
 
 # Given path to json file, return a formatted body string without title
 def json_text_path(path):
-	logging.debug("called : json_text_path")
+	logging.debug("called : %s", __name__)
 	logging.debug("argument path : %s", path)
 	n = Notice(path)
 	notice = n.get_json()
@@ -53,7 +53,7 @@ def json_text_path(path):
 
 # Given path to json file, return a formatted body string with all the details
 def json_text_raw(path):
-	logging.debug("called : json_text_raw")
+	logging.debug("called : %s", __name__)
 	logging.debug("argument path : ", path)
 	n = Notice(path)
 	notice = n.get_json()
@@ -67,7 +67,7 @@ def json_text_raw(path):
 
 # Print all the json files present in gen/json
 def view_all_json():
-	logging.debug("called : view_all_json")
+	logging.debug("called : %s", __name__)
 	root = os.path.abspath(os.path.dirname(__file__))
 	path = root + "/gen/json/"
 	listdir = os.listdir(path)

@@ -19,7 +19,7 @@ path = root + "/gen/json/"
 # Given a notice, send all the details to channel
 def send_json(notice):
 	'''Send the notification of notice for given json'''
-	logging.debug("called : send_json")
+	logging.debug("called : %s", __name__)
 	logging.debug("argument notice : %s", str(notice))
 
         if notice is None:
@@ -64,7 +64,7 @@ def send_json(notice):
 # Given name of json file, send a notification.
 def send_name(filename):
 	'''Send the notification for the notice of given json filename'''
-	logging.debug("called : send_name")
+	logging.debug("called : %s", __name__)
 	logging.debug("argument filename : %s", filename)
 
 	if filename is None:
@@ -100,7 +100,7 @@ def send_name(filename):
 # Check all the json file and sent notifications for unsent messages.
 def send_unsent():
 	'''Send notifications for all notices that have not been sent yet.'''
-	logging.debug("called : send_unsent")
+	logging.debug("called : %s", __name__)
 
 	filelist = os.listdir(path)
 	if 'old' in filelist:

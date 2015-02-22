@@ -9,7 +9,7 @@ from notice import Notice
 
 # Save the notices as json in gen/json folder by parsing gen/notice_board.html
 def insert(root = None):
-	logging.debug("called : insert")
+	logging.debug("called : %s", __name__)
 	logging.debug("argument root : %s", root)
 
 	if root is None:

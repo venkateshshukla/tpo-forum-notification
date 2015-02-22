@@ -17,7 +17,7 @@ jsondir = gendir + 'json/'
 
 # If more than max_size files present in json, move the old ones to old/
 def clean_old(path):
-	logging.debug("called : clean_old")
+	logging.debug("called : %s", __name__)
 	logging.debug("argument path : %s", path)
 
 	full_path = os.path.abspath(path)
@@ -60,7 +60,7 @@ def clean_old(path):
 
 # Check if the json is erroneous
 def erroneous_json(notice):
-	logging.debug("called : erroneous_json")
+	logging.debug("called : %s", __name__)
 	logging.debug("argument notice : %s", str(notice))
 	if notice['title'] == "":
 		logging.info("notice has empty title field")
@@ -75,7 +75,7 @@ def erroneous_json(notice):
 
 # Given the path of the json file, update it to include detail and attachment
 def update_json(tpo, name, sent = None, updated = None):
-	logging.debug("called : update_json")
+	logging.debug("called : %s", __name__)
 	logging.debug("argument name : %s", name)
 	logging.debug("argument sent : %s", str(sent))
 	logging.debug("argument updated : %s", str(updated))
@@ -130,7 +130,7 @@ def update_json(tpo, name, sent = None, updated = None):
 
 # Perform an update operation for the given notice name
 def update_name(name):
-	logging.debug("called : update_name")
+	logging.debug("called : %s", __name__)
 	tpo = TpoSession()
 	tpo.start_session()
 	tpo.forum_login()
@@ -138,7 +138,7 @@ def update_name(name):
 
 # Perform an update operation for the notices
 def update():
-	logging.debug("called : update")
+	logging.debug("called : %s", __name__)
 	if not os.path.isdir(jsondir):
 		logging.error("no directory named %s", jsondir)
 		return

@@ -7,7 +7,7 @@ from crontab import CronTab
 
 # Add cron jobs to system crontab
 def add_cron():
-	logging.debug("called : add_cron")
+	logging.debug("called : %s", __name__)
 	cron = CronTab()
 
 	# All cron job added by this application has comment
