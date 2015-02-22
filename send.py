@@ -7,6 +7,7 @@
 import os
 import json
 import requests
+import logging
 
 import view
 import update
@@ -17,13 +18,19 @@ path = root + "/gen/json/"
 
 # Given a notice, send all the details to channel
 def send_json(notice):
+	'''Send the notification of notice for given json'''
+	logging.debug("called : send_json")
+	logging.debug("argument notice : %s", str(notice))
+
         if notice is None:
+		logging.error("empty notice is recieved")
                 return
         # Pushbullet needs access token to your account.
         # This is an old token and does not work. Replace it with yours
 	# Push url remains same for everyone.
 	# Channel tag is essential for sending a push message to channel
 	# subscribers
+	logging.info("preparing to send post request to pushbullet")
         auth_token = "v1K2CgrcMgI8GMVY6FXcq3YueVn696RW2ZujAfWNgp38u"
 	push_url = "https://api.pushbullet.com/v2/pushes"
 	channel_tag = "iitbhutpo-test"
@@ -41,47 +48,66 @@ def send_json(notice):
 	data = json.dumps(payload)
 
 	print "Sending notice {} dated {}.".format(notice['title'], notice['time'])
+	logging.info("Sending notice %s dated %s.", notice['title'], notice['time'])
 	response = requests.post(push_url, auth=auth, headers=headers, data=data)
+	logging.info("Recieved response status code : %d", response.status_code)
 	if response.status_code == 200:
 		print "Success"
+		logging.info("push successfully sent")
 		return True
 	else:
 		print "Failed,", response.status_code, response.reason
+		logging.error("sending push failed : %d : %s",
+				response.status_code, response.reason)
 		return False
 
 # Given name of json file, send a notification.
 def send_name(filename):
+	'''Send the notification for the notice of given json filename'''
+	logging.debug("called : send_name")
+	logging.debug("argument filename : %s", filename)
+
 	if filename is None:
+		logging.error("empty filename received")
 		return
 
 	n = Notice(filename)
 	notice = n.get_json()
 
 	# If the notice is not updated, update it.
+	logging.debug("checking if notice is updated")
 	if not notice['updated']:
 		update.update_name(filename)
 		notice = n.get_json()
 
 	# If the notice is not sent, send it.
+	logging.debug("checking if notice is sent")
 	if not notice['sent']:
 		if send_json(notice):
 			# If notice is sent, save it locally. So that it is not
 			# sent again.
+			logging.debug("notice is sent - saving it locally")
 			notice['sent'] = True
 			n.save_json(notice)
 			return True
 		else:
+			logging.error("failed sending notice")
 			return False
 	else:
+		logging.debug("notice is already sent")
 		return False
 
 # Check all the json file and sent notifications for unsent messages.
 def send_unsent():
-	'''Send all notices that have not been sent yet.'''
+	'''Send notifications for all notices that have not been sent yet.'''
+	logging.debug("called : send_unsent")
+
 	filelist = os.listdir(path)
 	if 'old' in filelist:
 		filelist.remove('old')
 
+	# Sorted filelist so that older json files are listed earlier. Due to
+	# this, notices are sent in the order in which they arrive.
 	filelist.sort()
 
 	send_count = 0
@@ -89,15 +115,21 @@ def send_unsent():
 		if send_name(f):
 			send_count += 1
 			print "\r%d notifications sent."%send_count
+
 	if send_count == 0:
 		print "0 notifications sent."
 	else:
 		print ""
+
+	logging.info("%d notifications sent", send_count)
 	return send_count
 
 if __name__ == "__main__":
-	from time import strftime
-	print strftime("%Y-%m-%d %H:%M:%S")
-	print __file__
+	log_level = logging.INFO
+	log_format = "%(asctime)s\t%(levelname)s\t%(filename)s\t%(funcName)s()\t%(message)s"
+	logging.basicConfig(format=log_format, level=log_level)
+
+	logging.info("starting %s", __file__)
 	s = send_unsent()
+	logging.info("finished %s", __file__)
 
