@@ -6,15 +6,21 @@ from bs4 import BeautifulSoup
 import bs4
 import re
 from datetime import datetime
+import logging
 
 # Get timestamp from a time string
 def get_timestamp(s):
+	logging.debug("called : get_timestamp")
+	logging.debug("argument s : %s", s)
 	s = re.sub('(st|nd|rd|th),', ',', s)
 	d = datetime.strptime(s, "%a %b %d, %Y %I:%M %p")
 	return int(d.strftime("%s"))
 
 # Given a list item tag enclosing a description list, extract all its info
 def extract_info(li):
+	logging.debug("called : extract_info")
+	logging.debug("argument li : %s", li)
+
 	dl = li.find('dl')
 	dt = dl.find('dt')
 	info = {}
@@ -39,41 +45,53 @@ def extract_info(li):
 
 # Print the information extracted from the description list
 def print_info(info):
-	for i in info:
+	logging.debug("called : print_info")
+	for n, i in enumerate(info):
 		print i['timestamp'], '\t\t',
 		print i['time'], '\t\t',
 		print i['url'], '\t\t',
 		print i['num_attachments'], '\t\t',
 		print i['title']
 
+		logging.info("%d : %s\t%s\t%s\t%s\t%s", n, i['timestamp'],
+				i['time'], i['url'], i['num_attachments'],
+				i['title'])
 
 # Open file notice_board.html and extract all the useful information from it
 def get_notice_list(p):
+	logging.debug("called : get_notice_list")
+	logging.debug("argument p : %s", str(p))
 	if p is None:
+		logging.error("empty p is received")
 		return None
 	elif type(p) is unicode or type(p) is str:
+		logging.debug("html recieved in unicode or str")
 		html = p
 		pr = False
 	elif type(p) is bool:
+		logging.debug("bool recieved")
 		pr = p
+		logging.debug("reading html from /gen/notice_board.html")
 		filename = os.path.abspath(os.path.dirname(__file__)) + '/gen/notice_board.html'
 
 		if not os.path.isfile(filename):
-			print "No file with name %s is found. Please run 'python login.py' first"%filename
+			logging.error("No file with name %s is found. Please run 'python login.py' first",
+					filename)
 			return None
 
 		f = open(filename, 'r')
 		html = f.read()
 		f.close()
 	else:
+		logging.error('recieved argument of no recognised type')
 		return None
 
+	logging.debug("making a BeautifulSoup")
 	soup = BeautifulSoup(html)
 
 	div = None
 	for d in soup.find_all("ul"):
 		if 'class' in d.attrs:
-			#print d['class']
 			x = d['class']
 			if 'topics' in x:
 				div = d
@@ -81,16 +99,17 @@ def get_notice_list(p):
 	list_li = None
 
 	if div is None:
-		print "Unable to find ul of class topiclist topics"
+		logging.error("Unable to find ul of class topiclist topics")
 		return None
 
 	list_li = div.find_all('li')
 
 	if list_li is None:
-		print "Error getting list items from div topics"
+		logging.error("Error getting list items from div topics")
 		return None
 
 	print "Retrieved %d topics from the noticeboard"%len(list_li)
+	logging.info("Retrieved %d topics from the noticeboard", len(list_li))
 
 	info = []
 	for li in list_li:
@@ -101,8 +120,12 @@ def get_notice_list(p):
 
 # Given the html of notice detail page, extract its details and attachment link
 def get_notice_details(html, attach):
+	logging.debug("called : get_notice_details")
+	logging.debug("argument attach : %s", attach)
 	if html is None:
+		logging.error("empty html received")
 		return
+	logging.debug("making a BeautifulSoup")
 	soup = BeautifulSoup(html)
 	div = None
 	for d in soup.find_all('div'):
@@ -110,7 +133,7 @@ def get_notice_details(html, attach):
 			div = d
 			break
 	if div is None:
-		print "No div with class 'postbody' found"
+		logging.error("No div with class 'postbody' found")
 		return
 
 	details = {}
@@ -136,7 +159,11 @@ def get_notice_details(html, attach):
 
 # If run as a standalone script, run get_notice_list printing info
 if __name__ == "__main__":
-	from time import strftime
-	print strftime("%Y-%m-%d %H:%M:%S")
-	print __file__
+	log_level = logging.INFO
+	log_format = "%(asctime)s\t%(levelname)s\t%(filename)s\t%(funcName)s()\t%(message)s"
+	logging.basicConfig(format=log_format, level=log_level)
+
+	logging.info("starting %s", __file__)
 	get_notice_list(True)
+	logging.info("finished %s", __file__)
+
