@@ -1,0 +1,5 @@
+cron:
+- description: Check if new TPO Notice has arrived.
+  url: /run
+  schedule: every 1 mins
+  timezone: Asia/Kolkata
