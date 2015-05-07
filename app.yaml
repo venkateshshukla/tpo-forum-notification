@@ -7,3 +7,6 @@ handlers:
 - url: /run
   script: appengine.app
 
+libraries:
+- name: ssl
+  version: latest
