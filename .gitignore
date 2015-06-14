@@ -1,4 +1,5 @@
 *.pyc
 gen/
 logs/
-
+lib/
+appenv/
