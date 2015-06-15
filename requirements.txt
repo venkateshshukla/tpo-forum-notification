@@ -4,3 +4,4 @@ cffi==1.1.2
 cryptography==0.9.1
 requests[security]==2.5.1
 python-crontab==1.9.2
+peewee==2.6.1
