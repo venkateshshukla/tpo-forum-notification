@@ -1,3 +1,4 @@
+APScheduler==3.0.3
 beautifulsoup4==4.3.2
 cffi==1.1.2
 cryptography==0.9.1
