@@ -20,7 +20,7 @@ def clean_tabs(text):
 def json_text_body(notice):
 	logging.debug("called : %s", __name__)
 	logging.debug("argument notice : %s", str(notice))
-	baseurl = "http://www.iitbhu.ac.in/tpo/forum"
+	baseurl = os.environ.get('TPO_BASEURL', 'http://example.com')
 
 	fstr = notice['time'] + "\n\n"
 	if notice['updated']:
@@ -58,7 +58,7 @@ def json_text_raw(path):
 	n = Notice(path)
 	notice = n.get_json()
 
-	baseurl = "http://www.iitbhu.ac.in/tpo/forum"
+	baseurl = os.environ.get('TPO_BASEURL', 'http://example.com')
 	fstr = "{}\n\n{}\n\n".format(notice['title'], json_text_body(notice))
 	fstr += "Number of attachments : {}\n".format(notice['num_attachments'])
 	fstr += "Updated : {}\n".format(notice['updated'])

@@ -31,9 +31,9 @@ def send_json(notice):
 	# Channel tag is essential for sending a push message to channel
 	# subscribers
 	logging.info("preparing to send post request to pushbullet")
-        auth_token = "v1K2CgrcMgI8GMVY6FXcq3YueVn696RW2ZujAfWNgp38u"
 	push_url = "https://api.pushbullet.com/v2/pushes"
-	channel_tag = "iitbhutpo-test"
+        auth_token = os.environ.get("TPO_PB_AUTH")
+	channel_tag = os.environ.get("TPO_PB_CHANNEL")
 
 	auth = requests.auth.HTTPBasicAuth(auth_token, '')
 

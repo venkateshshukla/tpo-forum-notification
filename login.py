@@ -14,9 +14,11 @@ class TpoSession(object):
 
 	def __init__(self):
 		logging.debug("created object : TpoSession")
-		self.baseurl = "http://www.iitbhu.ac.in/tpo/forum"
-		self.username = "student"
-		self.password = "inspire"
+
+		self.baseurl = os.environ.get('TPO_BASEURL', 'http://example.com')
+		self.username = os.environ.get('TPO_USER', 'username')
+		self.password = os.environ.get('TPO_PASS', 'password')
+
 		self.sid = None
 		self.cookies = None
 
