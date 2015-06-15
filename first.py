@@ -69,6 +69,6 @@ logging.info('Setting the sent property to false.')
 sent_false()
 
 # Finally, insert the cron jobs to enable automatic updates
-logging.info('Inserting cron jobs.')
-cron.add_cron()
+#logging.info('Inserting cron jobs.')
+#cron.add_cron()
 
