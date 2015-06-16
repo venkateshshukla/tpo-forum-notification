@@ -10,6 +10,7 @@ from login import TpoSession
 import extract
 import insert
 from notice import Notice
+from notice_db import NoticeWrapper
 
 root = os.path.abspath(os.path.dirname(__file__))
 gendir = root + '/gen/'
@@ -73,6 +74,27 @@ def erroneous_json(notice):
 		return True
 	return False
 
+def get_details_url(url, attach):
+	"""
+	Given url of notice and whether attachments are present, extract a dict
+	containing update information and return.
+	"""
+	# Get the notice page html from the TPO website
+	logging.debug("Extracting notice page html from the TPO website")
+	html = tpo.get_forum_notice(url)
+	if html is None:
+		logging.error("Failed getting html file of notice from TPO")
+		return None
+
+	# Extract information from the notice
+	logging.debug("Extract useful information from the notice page.")
+	details = extract.get_notice_details(html, attach)
+	if details is None:
+		logging.error("Failed extracting information from the notice page.")
+		return None
+
+	return details
+
 # Given the path of the json file, update it to include detail and attachment
 def update_json(tpo, name, sent = None, updated = None):
 	logging.debug("called : %s", __name__)
@@ -102,19 +124,7 @@ def update_json(tpo, name, sent = None, updated = None):
 		logging.info("notice %s is already updated", name)
 		return False
 
-	# Get the notice page html from the TPO website
-	logging.debug("Extracting notice page html from the TPO website")
-	html = tpo.get_forum_notice(notice['url'])
-	if html is None:
-		logging.error("Failed getting html file of notice from TPO")
-		return False
-
-	# Extract information from the notice
-	logging.debug("Extract useful information from the notice page.")
-	details = extract.get_notice_details(html, notice['num_attachments'] == 1)
-	if details is None:
-		logging.error("Failed extracting information from the notice page.")
-		return False
+	details = get_details_url(notice['url'], notice['num_attachments'] == 1)
 
 	logging.debug("Notice has been updated with information from the notice	page")
 	notice['updated'] = True
@@ -164,6 +174,30 @@ def update():
 		print ''
 	logging.info("%d notice updated", up_count)
 	return up_count
+
+def update_db():
+	"""
+	Perform an update operation for all unupdated notices in the database
+	"""
+	logging.debug("called : %s", __name__)
+
+	tpo = TpoSession()
+	tpo.start_session()
+	tpo.forum_login()
+
+	logging.info('Updating notices')
+	notices = NoticeWrapper.get_unupdated()
+
+	logging.info('Found %d unupdated notices.', len(notices))
+	for notice in notices:
+		url = notice.url
+		attach = (notice.num_attachments == 1)
+
+		details = get_details_url(url, attach)
+
+		NoticeWrapper.update(notice, details)
+		logging.info('Updated notice dated %s titled %s.',
+				notice.print_time, notice.title)
 
 # If run as a standalone script, run update()
 if __name__ == '__main__':
