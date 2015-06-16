@@ -3,14 +3,10 @@ import logging
 
 from datetime import datetime
 from peewee import *
+from playhouse.db_url import connect
 
-root = os.path.abspath(os.path.dirname(__file__)) + "/gen"
-if not os.path.isdir(root):
-	logging.debug("making directory : %s", root)
-	os.makedirs(root)
-
-db_file = root + "/notice_14_15.db"
-db = SqliteDatabase(db_file)
+db_name = os.environ.get('DATABASE_URL')
+db = connect(db_name)
 
 class Notice(Model):
 	class Meta:
