@@ -38,12 +38,28 @@ class Notice(BaseModel):
 
 class NoticeWrapper(object):
 	def insert_dict(notice):
+		"""
+		Given a notice dict with the details, insert it into the Notice
+		database
+		"""
 		pass
 	def get_unupdated():
+		"""
+		Get all unupdated notices as a list of Notice
+		"""
 		pass
 	def update(notice, details):
+		"""
+		For givem Notice, update the entry in database with given
+		details
+		"""
 		pass
 	def get():
+		pass
+	def get_last(num=25):
+		"""
+		Return a list of num latest notices.
+		"""
 		pass
 
 def init_db():
