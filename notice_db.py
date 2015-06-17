@@ -48,6 +48,11 @@ class NoticeWrapper(object):
 		Get all unupdated notices as a list of Notice
 		"""
 		pass
+	def get_unsent():
+		"""
+		Get all unsent notices as a list of Notice
+		"""
+		pass
 	def update(notice, details):
 		"""
 		For givem Notice, update the entry in database with given
