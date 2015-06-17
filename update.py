@@ -79,6 +79,9 @@ def get_details_url(url, attach):
 	Given url of notice and whether attachments are present, extract a dict
 	containing update information and return.
 	"""
+	tpo = TpoSession()
+	tpo.start_session()
+	tpo.forum_login()
 	# Get the notice page html from the TPO website
 	logging.debug("Extracting notice page html from the TPO website")
 	html = tpo.get_forum_notice(url)
@@ -96,11 +99,9 @@ def get_details_url(url, attach):
 	return details
 
 # Given the path of the json file, update it to include detail and attachment
-def update_json(tpo, name, sent = None, updated = None):
+def update_json(name):
 	logging.debug("called : %s", __name__)
 	logging.debug("argument name : %s", name)
-	logging.debug("argument sent : %s", str(sent))
-	logging.debug("argument updated : %s", str(updated))
 
 	path = jsondir + name
 	if not os.path.isfile(path):
@@ -138,14 +139,6 @@ def update_json(tpo, name, sent = None, updated = None):
 
 	return True
 
-# Perform an update operation for the given notice name
-def update_name(name):
-	logging.debug("called : %s", __name__)
-	tpo = TpoSession()
-	tpo.start_session()
-	tpo.forum_login()
-	return update_json(tpo, name)
-
 # Perform an update operation for the notices
 def update():
 	logging.debug("called : %s", __name__)
@@ -158,13 +151,11 @@ def update():
 	filelist = os.listdir(jsondir)
 
 	up_count = 0
-	tpo = TpoSession()
-	tpo.start_session()
-	tpo.forum_login()
+
 	print "Updating notices"
 	logging.info("Updating notices")
 	for f in filelist:
-		if update_json(tpo, f):
+		if update_json(f):
 			up_count += 1
 			sys.stdout.write("\r{} Notices updated.".format(up_count))
 			sys.stdout.flush()
@@ -180,10 +171,6 @@ def update_db():
 	Perform an update operation for all unupdated notices in the database
 	"""
 	logging.debug("called : %s", __name__)
-
-	tpo = TpoSession()
-	tpo.start_session()
-	tpo.forum_login()
 
 	logging.info('Updating notices')
 	notices = NoticeWrapper.get_unupdated()

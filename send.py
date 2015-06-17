@@ -113,7 +113,7 @@ def send_name(filename):
 	# If the notice is not updated, update it.
 	logging.debug("checking if notice is updated")
 	if not notice['updated']:
-		update.update_name(filename)
+		update.update_json(filename)
 		notice = n.get_json()
 
 	# If the notice is not sent, send it.
