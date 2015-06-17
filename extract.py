@@ -41,6 +41,8 @@ def extract_info(li):
 	else:
 		info['num_attachments'] = 1
 
+	info['sent'] = False
+	info['updated'] = False
 	return info
 
 # Print the information extracted from the description list

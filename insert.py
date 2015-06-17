@@ -26,8 +26,6 @@ def insert(root = None):
 		return None
 	count = 0
 	for notice in notices:
-		notice['updated'] = False
-		notice['sent'] = False
 		timestamp = str(notice['timestamp'])
 		path = root + '/' + timestamp + '.json'
 		if os.path.isfile(path):
