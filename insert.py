@@ -2,6 +2,7 @@
 # Script to get the list of notices and save them locally
 
 import os
+import sys
 import logging
 
 import extract
@@ -55,7 +56,7 @@ def insert_db():
 
 	count = 0
 	for notice in notices:
-		if NoticeWrapper.insert_dict(notice):
+		if NoticeWrapper.insert_dict_safe(notice):
 			count += 1
 			print "Added notice dated '{}' titled '{}'.".format(
 					notice['time'], notice['title'])
@@ -75,7 +76,11 @@ if __name__ == '__main__':
 	logging.basicConfig(format=log_format, level=log_level)
 
 	logging.debug("starting %s", __file__)
-	num = insert()
+
+	if len(sys.argv) == 2 and sys.argv[1] == 'db':
+		num = insert_db()
+	else:
+		num = insert()
 	if num is not None:
 		logging.info("saved %d notices", num)
 		print "Saved %d notices."%num
