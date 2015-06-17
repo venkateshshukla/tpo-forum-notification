@@ -96,7 +96,7 @@ def send_notice(notice):
 	print "Sending notice {} dated {}.".format(title, time)
 	logging.info("Sending notice %s dated %s.", title, time)
 
-	return push_payload(data)
+	return push(data)
 
 def send_name(filename):
 	'''Send the notification for the notice of given json filename'''
@@ -168,6 +168,7 @@ def send_unsent_db():
 	send_count = 0
 	for notice in notices:
 		if send_notice(notice):
+			NoticeWrapper.sent(notice)
 			send_count += 1
 			print "\r%d notifications sent."%send_count
 

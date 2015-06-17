@@ -136,7 +136,24 @@ class NoticeWrapper(object):
 		For given Notice, update the entry in database with given
 		details
 		"""
-		pass
+		notice.text = details['text']
+		if notice['num_attachments'] > 0:
+			notice.attachments = Attachment.from_list(details['attachments'])
+			notice.num_attachments = len(details['attachments'])
+		notice.updated = True
+		notice.update_time = datetime.now()
+		notice.save()
+
+	@staticmethod
+	def sent(notice):
+		"""
+		Given Notice object is sent to user, update the database to show
+		this.
+		A little difference (millisecs) in timestamp would not hurt.
+		"""
+		notice.sent = True
+		notice.send_time = datetime.now()
+		notice.save()
 
 	@staticmethod
 	def get_last(num=25):
