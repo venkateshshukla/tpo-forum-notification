@@ -16,7 +16,6 @@ from notice import Notice
 root = os.path.abspath(os.path.dirname(__file__))
 path = root + "/gen/json/"
 
-# Given a notice, send all the details to channel
 def send_json(notice):
 	'''Send the notification of notice for given json'''
 	logging.debug("called : %s", __name__)
@@ -26,10 +25,9 @@ def send_json(notice):
 		logging.error("empty notice is recieved")
                 return
         # Pushbullet needs access token to your account.
-        # This is an old token and does not work. Replace it with yours
-	# Push url remains same for everyone.
-	# Channel tag is essential for sending a push message to channel
-	# subscribers
+	# Add environmental variables
+	# TPO_PB_AUTH - The pushbullet auth token
+	# TPO_PB_CHANNEL - The pushbullet channel name
 	logging.info("preparing to send post request to pushbullet")
 	push_url = "https://api.pushbullet.com/v2/pushes"
         auth_token = os.environ.get("TPO_PB_AUTH")
@@ -42,7 +40,7 @@ def send_json(notice):
 	payload = {}
 	payload['type'] = 'note'
 	payload['title'] = notice['title']
-	payload['body'] = view.json_text_body(notice)
+	payload['body'] = view.get_text_dict(notice, True)
 	payload['channel_tag'] = channel_tag
 
 	data = json.dumps(payload)
@@ -61,7 +59,6 @@ def send_json(notice):
 				response.status_code, response.reason)
 		return False
 
-# Given name of json file, send a notification.
 def send_name(filename):
 	'''Send the notification for the notice of given json filename'''
 	logging.debug("called : %s", __name__)
@@ -97,7 +94,6 @@ def send_name(filename):
 		logging.debug("notice is already sent")
 		return False
 
-# Check all the json file and sent notifications for unsent messages.
 def send_unsent():
 	'''Send notifications for all notices that have not been sent yet.'''
 	logging.debug("called : %s", __name__)
