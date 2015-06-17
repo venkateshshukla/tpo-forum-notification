@@ -117,14 +117,18 @@ class NoticeWrapper(object):
 		"""
 		Get all unupdated notices as a list of Notice
 		"""
-		pass
+		q = Notice.select().where(Notice.updated ==
+				False).order_by(Notice.time)
+		return q
 
 	@staticmethod
 	def get_unsent():
 		"""
 		Get all unsent notices as a list of Notice
 		"""
-		pass
+		q = Notice.select().where(Notice.sent ==
+				False).order_by(Notice.time)
+		return q
 
 	@staticmethod
 	def update(notice, details):
@@ -135,15 +139,17 @@ class NoticeWrapper(object):
 		pass
 
 	@staticmethod
-	def get():
-		pass
-
-	@staticmethod
 	def get_last(num=25):
 		"""
 		Return a list of num latest notices.
+		The tiny code here was obtained from IRC by cliefer, admin of
+		#peewee (most probably the founder).
+		It uses subquery to get the result.
 		"""
-		pass
+		sq = Notice.select(Notice).order_by(Notice.time.desc()).limit(num)
+		sq = sq.alias('t1')
+		q = Notice.select().from_(sq).order_by(sq.c.time.asc())
+		return q
 
 def init_db():
 	db.connect()
