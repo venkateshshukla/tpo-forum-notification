@@ -29,6 +29,7 @@ class Attachment(BaseModel):
 
 		count = 0
 		sl = None
+		at = None
 		for a in reversed(ats):
 			at = Attachment.from_dict(a)
 			at.next = sl
@@ -137,7 +138,7 @@ class NoticeWrapper(object):
 		details
 		"""
 		notice.text = details['text']
-		if notice['num_attachments'] > 0:
+		if notice.num_attachments > 0:
 			notice.attachments = Attachment.from_list(details['attachments'])
 			notice.num_attachments = len(details['attachments'])
 		notice.updated = True

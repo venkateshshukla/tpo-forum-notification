@@ -175,7 +175,6 @@ def update_db():
 	logging.info('Updating notices')
 	notices = NoticeWrapper.get_unupdated()
 
-	logging.info('Found %d unupdated notices.', len(notices))
 	for notice in notices:
 		url = notice.url
 		attach = (notice.num_attachments == 1)
@@ -183,6 +182,8 @@ def update_db():
 		details = get_details_url(url, attach)
 
 		NoticeWrapper.update(notice, details)
+		print 'Updated notice dated {} titled {}.'.format(
+				notice.print_time, notice.title)
 		logging.info('Updated notice dated %s titled %s.',
 				notice.print_time, notice.title)
 
@@ -193,6 +194,9 @@ if __name__ == '__main__':
 	logging.basicConfig(format=log_format, level=log_level)
 
 	logging.info("starting %s", __file__)
-	n = update()
+	if len(sys.argv) == 2 and sys.argv[1] == 'db':
+		n = update_db()
+	else:
+		n = update()
 	logging.info("finished %s", __file__)
 
