@@ -35,6 +35,30 @@ def run():
 
 	logging.info("Finished running script.")
 
+def run_db():
+	# Login and save the html file to gen
+	logging.info('Login and saving notice board html to gen')
+	tpo = TpoSession()
+	tpo.login()
+
+	# From the html file, extract and save the notices
+	logging.info('Saving the notices to database.')
+	num = insert.insert_db()
+	if num is None:
+		logging.error("Error encountered during extraction. Exiting.")
+		exit()
+	logging.info("Inserted %d notices.", num)
+
+	# Update the json files to include the notice details and attachments
+	logging.info('Updating json files')
+	update.update_db()
+
+	# Send the unsent notices
+	logging.info('Sending unsent notices.')
+	send.send_unsent_db()
+
+	logging.info("Finished running script.")
+
 if __name__ == '__main__':
 	log_dir = os.path.abspath(os.path.dirname(__file__)) + '/logs'
 	if not os.path.isdir(log_dir):
