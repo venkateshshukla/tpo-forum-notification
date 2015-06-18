@@ -2,6 +2,7 @@
 # Veiw the generated files easily
 
 import os
+import sys
 import logging
 
 from notice import Notice
@@ -138,6 +139,12 @@ if __name__ == "__main__":
 	logging.basicConfig(format=log_format, level=log_level)
 
 	logging.debug("starting %s", __file__)
-	view_all_json()
+	if len(sys.argv) == 2 and sys.argv[1] == 'db':
+		view_db()
+	elif len(sys.argv) == 3 and sys.argv[1] == 'db':
+		num = int(sys.argv[2])
+		view_db(num)
+	else:
+		view_all_json()
 	logging.debug("finished %s", __file__)
 

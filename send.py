@@ -5,6 +5,7 @@
 # For more details on Pushbullet API, look at https://docs.pushbullet.com/
 
 import os
+import sys
 import json
 import requests
 import logging
@@ -96,7 +97,7 @@ def send_notice(notice):
 	print "Sending notice {} dated {}.".format(title, time)
 	logging.info("Sending notice %s dated %s.", title, time)
 
-	return push(data)
+	return push(title, body)
 
 def send_name(filename):
 	'''Send the notification for the notice of given json filename'''
@@ -186,6 +187,9 @@ if __name__ == "__main__":
 	logging.basicConfig(format=log_format, level=log_level)
 
 	logging.info("starting %s", __file__)
-	s = send_unsent()
+	if len(sys.argv) == 2 and sys.argv[1] == 'db':
+		s = send_unsent_db()
+	else:
+		s = send_unsent()
 	logging.info("finished %s", __file__)
 
