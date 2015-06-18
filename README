@@ -20,6 +20,60 @@ Dependencies
 5. psycopg2 - https://pypi.python.org/pypi/psycopg2
 6. [OPTIONAL] python-crontab - https://pypi.python.org/pypi/python-crontab
 
+Before Running
+==============
+
+In order to prepare the environment for running this application, follow the
+following steps.
+
+0. Make sure pip is installed. If not, install it using,
+
+	$ sudo apt-get install python-pip
+
+1. Install virtualenv so that isolated environment can be made available for
+this application to run in. Do this by,
+
+	$ sudo pip install virtualenv
+
+2. Make a new virtual environment for this application by running the following
+in the applications directory
+
+	$ virtualenv appenv
+
+This creates a folder named appenv that acts as the pythonpath for this
+application.
+
+3. Activate the virtual environment using,
+
+	$ source appenv/bin/activate
+
+A (appenv) in front of the prompt marks success. To deactivate, simply,
+
+	$ deactivate
+
+4. Install the dependencies of this project as available in the
+requirements.txt file. Do this by,
+
+	$ pip install -r requirements.txt
+
+Do not use sudo here.
+You can confirm that everything is installed by looking through the appenv
+directory.
+
+5. Export required environmental variables - This application uses envronmental
+variables for important variable. Set these by export commands as below. You can
+also add these commands to ~/.bashrc so that they are auto exported every time a
+terminal is opened.
+
+	$ export TPO_BASEURL='http://url.of.tpo'
+	$ export TPO_PASS='password'
+	$ export TPO_USER='usename'
+	$ export TPO_PB_AUTH='auth_code_op_pushbullet'
+	$ export TPO_PB_CHANNEL='pushbullet channel name'
+	$ export DATABASE_URL=postgres:///$(whoami)
+
+The application is now ready to be run.
+
 About Postgres
 ==============
 
