@@ -169,9 +169,11 @@ class NoticeWrapper(object):
 		q = Notice.select().from_(sq).order_by(sq.c.time.asc())
 		return q
 
-def init_db():
-	db.connect()
-	db.create_tables([Attachment, Notice], safe=True)
+	@staticmethod
+	def init_db():
+		db.connect()
+		db.create_tables([Attachment, Notice], safe=True)
 
-def deinit_db():
-	db.close()
+	@staticmethod
+	def deinit_db():
+		db.close()
