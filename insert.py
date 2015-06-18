@@ -66,6 +66,7 @@ def insert_db():
 		else:
 			continue
 
+	print "{} notices inserted".format(count)
 	logging.info("%d notices inserted", count)
 	return count
 

@@ -3,6 +3,7 @@
 # sequentially
 
 import os
+import sys
 import time
 import logging
 
@@ -69,4 +70,7 @@ if __name__ == '__main__':
 	log_file = "{}/{}.log".format(log_dir, time.strftime("%Y_%m_%d"))
 	log_format = "%(asctime)s\t%(levelname)s\t%(filename)s\t%(funcName)s()\t%(message)s"
 	logging.basicConfig(filename=log_file, format=log_format, level=log_level)
-	run()
+	if len(sys.argv) == 2 and sys.argv[1] == 'db':
+		run_db()
+	else:
+		run()

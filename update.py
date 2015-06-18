@@ -175,6 +175,7 @@ def update_db():
 	logging.info('Updating notices')
 	notices = NoticeWrapper.get_unupdated()
 
+	count = 0
 	for notice in notices:
 		url = notice.url
 		attach = (notice.num_attachments == 1)
@@ -182,10 +183,13 @@ def update_db():
 		details = get_details_url(url, attach)
 
 		NoticeWrapper.update(notice, details)
+		count += 1
 		print 'Updated notice dated {} titled {}.'.format(
 				notice.print_time, notice.title)
 		logging.info('Updated notice dated %s titled %s.',
 				notice.print_time, notice.title)
+	print '{} notices updated.'.format(count)
+	logging.info('%d notices updated.', count)
 
 # If run as a standalone script, run update()
 if __name__ == '__main__':

@@ -110,8 +110,8 @@ def get_notice_list(p):
 		logging.error("Error getting list items from div topics")
 		return None
 
-	print "Retrieved %d topics from the noticeboard"%len(list_li)
-	logging.info("Retrieved %d topics from the noticeboard", len(list_li))
+	print "%d notices retreived from the noticeboard"%len(list_li)
+	logging.info("%d notices retreived from the noticeboard", len(list_li))
 
 	info = []
 	for li in list_li:
