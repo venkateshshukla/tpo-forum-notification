@@ -175,8 +175,3 @@ def init_db():
 
 def deinit_db():
 	db.close()
-
-if __name__ == '__main__':
-	logging.debug("Starting : {}".format(__file__))
-	init_db()
-	deinit_db()
