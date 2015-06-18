@@ -9,7 +9,7 @@ import time
 
 from apscheduler.schedulers.blocking import BlockingScheduler
 
-from run import run
+from run import run_db
 
 def run_job():
 	log_dir = os.path.abspath(os.path.dirname(__file__)) + '/logs'
@@ -21,7 +21,7 @@ def run_job():
 	log_file = "{}/{}.log".format(log_dir, time.strftime("%Y_%m_%d"))
 	log_format = "%(asctime)s\t%(levelname)s\t%(filename)s\t%(funcName)s()\t%(message)s"
 	logging.basicConfig(filename=log_file, format=log_format, level=log_level)
-	run()
+	run_db()
 
 if __name__ == '__main__':
 	sched = BlockingScheduler()
