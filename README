@@ -16,4 +16,29 @@ Dependencies
 1. Requests - http://docs.python-requests.org/
 2. BeautifulSoup - http://www.crummy.com/software/BeautifulSoup/
 3. APScheduler - https://apscheduler.readthedocs.org
-4. [OPTIONAL] python-crontab - https://pypi.python.org/pypi/python-crontab
+4. peewee - https://peewee.readthedocs.org
+5. psycopg2 - https://pypi.python.org/pypi/psycopg2
+6. [OPTIONAL] python-crontab - https://pypi.python.org/pypi/python-crontab
+
+About Postgres
+==============
+
+The application has support for using postgres database to store its notices.
+
+For usage of postgres :
+
+1. export DATABASE_URL pointing to the postgres:// of the database
+2. Use _db() functions for interacting with the database.
+
+For testing on local system, this works.
+
+	export DATABASE_URL=postgres:///$(whoami)
+
+Deploy
+======
+
+This application is currently deployed on Heroku and uses its postgres add-on.
+
+It does not support Google App Engine is not possible because of its restriction
+on writing files. Even though a database can be used, write permission is
+required to save the html file of the Notice Board.
