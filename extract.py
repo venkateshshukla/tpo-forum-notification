@@ -3,10 +3,10 @@
 
 import os.path
 from bs4 import BeautifulSoup
-import bs4
 import re
 from datetime import datetime
 import logging
+from unidecode import unidecode
 
 # Get timestamp from a time string
 def get_timestamp(s):
@@ -32,7 +32,7 @@ def extract_info(li):
 	info['timestamp'] = get_timestamp(time)
 
 	a = dt.find('a')
-	info['title'] = a.text
+	info['title'] = unidecode(a.text)
 	info['url'] = a['href'].strip('\.')
 
 	img = dt.find('img')
@@ -145,7 +145,7 @@ def get_notice_details(html, attach):
 	f = e.replace('<br/>', '\n')
 	g = BeautifulSoup(f)
 	h = g.text
-	details['text'] = h.encode('ascii', 'ignore')
+	details['text'] = unidecode(h)
 
 	if attach:
 		attachments = []
@@ -153,7 +153,7 @@ def get_notice_details(html, attach):
 		a_list = dl.find_all('a')
 		for a in a_list:
 			t = {}
-			t['title'] = a.text
+			t['title'] = unidecode(a.text)
 			t['url'] = a['href'].strip('\.')
 			attachments.append(t)
 		details['attachments'] = attachments
