@@ -11,6 +11,7 @@ import insert
 import update
 import send
 from login import TpoSession
+from notice_db import NoticeWrapper
 
 def run():
 	# Login and save the html file to gen
@@ -42,6 +43,8 @@ def run_db():
 	tpo = TpoSession()
 	tpo.login()
 
+	NoticeWrapper.init_db()
+
 	# From the html file, extract and save the notices
 	logging.info('Saving the notices to database.')
 	num = insert.insert_db()
@@ -57,6 +60,8 @@ def run_db():
 	# Send the unsent notices
 	logging.info('Sending unsent notices.')
 	send.send_unsent_db()
+
+	NoticeWrapper.deinit_db()
 
 	logging.info("Finished running script.")
 
