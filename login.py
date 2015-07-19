@@ -18,6 +18,7 @@ class TpoSession(object):
 		self.baseurl = os.environ.get('TPO_BASEURL', 'http://example.com')
 		self.username = os.environ.get('TPO_USER', 'username')
 		self.password = os.environ.get('TPO_PASS', 'password')
+                self.noticeurl = os.environ.get('TPO_NOTICEURL', '/viewforum?id=0')
 
 		self.sid = None
 		self.cookies = None
@@ -114,7 +115,7 @@ class TpoSession(object):
 	def forum_login(self):
 		logging.debug("called : forum_login")
 		url = self.baseurl + "/ucp.php?mode=login"
-		redirect = "/viewforum.php?f=163"
+		redirect = self.noticeurl
 		login = "login"
 
 		payload = {}
@@ -151,7 +152,7 @@ class TpoSession(object):
 		payload = {}
 		payload["sid"] = self.sid
 
-		url = self.baseurl + "/viewforum.php?f=163"
+		url = self.baseurl + self.noticeurl
 
 		logging.debug("sending a POST request to url : %s", url)
 		response = requests.get(url, cookies=self.cookies, data=payload)
