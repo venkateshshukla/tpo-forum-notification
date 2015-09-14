@@ -12,7 +12,15 @@ using some web scripts. Let us see where it goes.
 
 Dependencies
 ============
+The following dependecies are to be installed in the linux boxes before getting
+into the python dependencies
+1. python-lxml (sudo apt-get install python-lxml)
+2. libpq-dev (debian based) or postgresql-devel (rhel based) for connecting to
+postgresql database using python
+3. python-dev (debian based) or its equivalent in rhel based systems
+4. libffi-dev (debian based) or its equivalent in rhel based systems
 
+** Python Dependencies **
 1. Requests - http://docs.python-requests.org/
 2. BeautifulSoup - http://www.crummy.com/software/BeautifulSoup/
 3. APScheduler - https://apscheduler.readthedocs.org
