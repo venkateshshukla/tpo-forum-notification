@@ -21,111 +21,53 @@ class TpoSession(object):
                 self.noticeurl = os.environ.get('TPO_NOTICEURL', '/viewforum?id=0')
 
 		self.sid = None
-		self.cookies = None
+                self.session = None
 
-	@property
-	def baseurl(self):
-		return self._baseurl
+        # Rather than using individual cookies, use Request session for
+        # interactions with the forum
+        def start_session(self):
+                logging.debug("called : start_session_2")
+                url = self.baseurl + "/ucp.php"
 
-	@baseurl.setter
-	def baseurl(self, url):
-		logging.debug("setting baseurl : %s", url)
-		self._baseurl = url
+                session = requests.Session()
 
-	@baseurl.deleter
-	def baseurl(self):
-		del self._baseurl
-
-	@property
-	def username(self):
-		return self._username
-
-	@username.setter
-	def username(self, name):
-		logging.debug("setting username : %s", name)
-		self._username = name
-
-	@username.deleter
-	def username(self):
-		del self._username
-
-	@property
-	def password(self):
-		return self._password
-
-	@password.setter
-	def password(self, pwd):
-		logging.debug("setting password : %s", pwd)
-		self._password = pwd
-
-	@password.deleter
-	def password(self):
-		del self._password
-
-	@property
-	def sid(self):
-		return self._sid
-
-	@sid.setter
-	def sid(self, x):
-		logging.debug("setting sid : %s", str(x))
-		self._sid = x
-
-	@sid.deleter
-	def sid(self):
-		del self._sid
-
-	@property
-	def cookies(self):
-		return self._cookies
-
-	@cookies.setter
-	def cookies(self, ck):
-		logging.debug("setting cookies : %s", str(ck))
-		self._cookies = ck
-
-	@cookies.deleter
-	def cookies(self):
-		del self._cookies
-
-	# Get session id for logging in the forum.
-	def start_session(self):
-		logging.debug("called : start_session")
-		url = self.baseurl + "/ucp.php"
-		sid_key = "iitbhu_phpbb3_sid"
-
-		logging.debug("sending a GET request to %s", url)
-		response = requests.get(url)
+                logging.debug("sending a GET request to %s", url)
+                response = session.get(url)
 		logging.debug("recieved response status code : %d", response.status_code)
 
 		if response.status_code != 200:
 			logging.error("Error during connection : %s", response.reason)
 			return False
 
-		cookies = response.cookies
-		sid = cookies[sid_key]
+		sid_key = "iitbhu_phpbb3_sid"
+		sid = response.cookies[sid_key]
 
 		logging.info("Session started with session id : %s", sid)
 
 		self.sid = sid
-		self.cookies = cookies
+                self.session = session
 		return True
 
-	# Using the session id and the cookies, login to the forum using a POST request
-	def forum_login(self):
-		logging.debug("called : forum_login")
+
+        # Using the session already created, login to the forum using a POST
+        # request
+        def forum_login(self):
+                logging.debug("called : forum_login")
 		url = self.baseurl + "/ucp.php?mode=login"
 		redirect = self.noticeurl
 		login = "login"
 
+                if  self.sid is None or self.session is None:
+                        logging.error("No sid, call start_session first")
+                        return False
+
 		payload = {}
 		payload["username"] = self.username
 		payload["password"] = self.password
-		payload["sid"] = self.sid
 		payload["login"] = login
 
 		logging.debug("sending a POST request to url : %s", url)
-		response = requests.post(url, cookies=self.cookies, data=payload)
+		response = self.session.post(url,  data=payload)
 		logging.debug("recieved response status code : %d", response.status_code)
 
 		if response.status_code != 200:
@@ -134,7 +76,6 @@ class TpoSession(object):
 
 		if self.login_success_msg in response.text:
 			logging.info(self.login_success_msg)
-			self.cookies = response.cookies
 			return True
 		else:
 			logging.error("Error logging in to TPO forum.")
@@ -144,7 +85,7 @@ class TpoSession(object):
 	# Using the session id and login cookies, Get the forum page showing notices
 	def get_forum_page(self):
 		logging.debug("called : get_forum_page")
-		if self.sid == None or self.cookies == None:
+		if self.sid is None or self.session is None:
 			logging.error("Tpo session cookies or sid not present")
 			logging.info("Start a new session first using method start_session()")
 			return None
@@ -155,7 +96,7 @@ class TpoSession(object):
 		url = self.baseurl + self.noticeurl
 
 		logging.debug("sending a POST request to url : %s", url)
-		response = requests.get(url, cookies=self.cookies, data=payload)
+		response = self.session.get(url, params=payload)
 		logging.debug("recieved response with status %s",
 				str(response.status_code))
 
@@ -177,11 +118,13 @@ class TpoSession(object):
 	def get_forum_notice(self, offset = None):
 		logging.debug("called : get_forum_notice")
 		logging.debug("param offset : %s", offset)
+
 		if offset == None:
 			logging.error("Empty offset recieved")
 			logging.info("Offset is empty. Include notice url")
 			return None
-		if self.sid == None or self.cookies == None:
+
+                if self.sid == None or self.cookies == None:
 			logging.error("TPO session cookies or sid missing")
 			logging.info("Start a new session first using method start_session()")
 			return None
@@ -192,7 +135,7 @@ class TpoSession(object):
 		url = self.baseurl + offset
 
 		logging.debug("sending a GET request to url : %s", url)
-		response = requests.get(url, cookies=self.cookies, data=payload)
+		response = self.session.get(url, data=payload)
 		logging.debug("recieved response status code : %d",
 				response.status_code)
 
