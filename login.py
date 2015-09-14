@@ -11,6 +11,7 @@ class TpoSession(object):
 
 	login_failed_msg = "The board requires you to be registered and logged in to view this forum."
 	login_success_msg = "You have been successfully logged in."
+        error_msg = "An error occurred"
 
 	def __init__(self):
 		logging.debug("created object : TpoSession")
@@ -18,7 +19,7 @@ class TpoSession(object):
 		self.baseurl = os.environ.get('TPO_BASEURL', 'http://example.com')
 		self.username = os.environ.get('TPO_USER', 'username')
 		self.password = os.environ.get('TPO_PASS', 'password')
-                self.noticeurl = os.environ.get('TPO_NOTICEURL', '/viewforum?id=0')
+                self.forumid = os.environ.get('TPO_FORUMID', 0)
 
 		self.sid = None
                 self.session = None
@@ -54,7 +55,6 @@ class TpoSession(object):
         def forum_login(self):
                 logging.debug("called : forum_login")
 		url = self.baseurl + "/ucp.php?mode=login"
-		redirect = self.noticeurl
 		login = "login"
 
                 if  self.sid is None or self.session is None:
@@ -91,9 +91,9 @@ class TpoSession(object):
 			return None
 
 		payload = {}
-		payload["sid"] = self.sid
+		payload["f"] = self.forumid
 
-		url = self.baseurl + self.noticeurl
+		url = self.baseurl + "/viewforum.php"
 
 		logging.debug("sending a POST request to url : %s", url)
 		response = self.session.get(url, params=payload)
@@ -107,6 +107,11 @@ class TpoSession(object):
 				logging.error("not logged in to the forum")
 				logging.info("first login to the forum using forum_login()")
 				return None
+                        if self.error_msg in response.content:
+                                logging.error(self.error_msg)
+                                logging.error("Error in the program logic. Rectify.")
+                                return None
+
 			logging.info("Forum page retrieved.")
 			return response.content
 		else:
@@ -124,7 +129,7 @@ class TpoSession(object):
 			logging.info("Offset is empty. Include notice url")
 			return None
 
-                if self.sid == None or self.cookies == None:
+                if self.sid is None or self.session is None:
 			logging.error("TPO session cookies or sid missing")
 			logging.info("Start a new session first using method start_session()")
 			return None
@@ -144,7 +149,7 @@ class TpoSession(object):
 				logging.error("received : %s",
 						self.login_failed_msg)
 				logging.error("not logged in the TPO forum")
-				logging.info("Login first by running method orum_login()")
+				logging.info("Login first by running method forum_login()")
 				return None
 			logging.info("Notice retrieved.")
 			return response.content
@@ -169,9 +174,8 @@ class TpoSession(object):
 			return None
 
 		logging.info("logging in to the TPO forum")
-		r1 = self.forum_login()
 
-		if r1:
+                if self.forum_login():
 			logging.info("getting the notice board page")
 			html = self.get_forum_page()
 			if html is not None:
