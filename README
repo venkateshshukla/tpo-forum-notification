@@ -78,6 +78,7 @@ terminal is opened.
 	$ export TPO_USER='usename'
 	$ export TPO_PB_AUTH='auth_code_op_pushbullet'
 	$ export TPO_PB_CHANNEL='pushbullet channel name'
+	$ export TPO_FORUMID=100
 	$ export DATABASE_URL=postgres:///$(whoami)
 
 The application is now ready to be run.
@@ -104,3 +105,19 @@ This application is currently deployed on Heroku and uses its postgres add-on.
 It does not support Google App Engine is not possible because of its restriction
 on writing files. Even though a database can be used, write permission is
 required to save the html file of the Notice Board.
+
+Run
+====
+
+For running on a linux box, there are two ways:
+
+1. Using python
+
+   $ python schedule.py
+
+2. Using bash
+
+   $ watch -n 0 bash schedule.sh
+
+As both of the above commands should run indefinitely, leave it detached on a
+GNU screen.
