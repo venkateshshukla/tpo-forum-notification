@@ -11,6 +11,7 @@ import extract
 import insert
 from notice import Notice
 from notice_db import NoticeWrapper
+from util import tprint
 
 root = os.path.abspath(os.path.dirname(__file__))
 gendir = root + '/gen/'
@@ -152,15 +153,14 @@ def update():
 
 	up_count = 0
 
-	print "Updating notices"
+	tprint("Updating notices")
 	logging.info("Updating notices")
 	for f in filelist:
 		if update_json(f):
 			up_count += 1
-			sys.stdout.write("\r{} Notices updated.".format(up_count))
-			sys.stdout.flush()
+			tprint("\r{} Notices updated.".format(up_count))
 	if up_count == 0:
-		print '0 Notices updated.'
+		tprint("0 Notices updated.")
 	else:
 		print ''
 	logging.info("%d notice updated", up_count)
@@ -184,11 +184,11 @@ def update_db():
 
 		NoticeWrapper.update(notice, details)
 		count += 1
-		print 'Updated notice dated {} titled {}.'.format(
-				notice.print_time, notice.title)
+		tprint("Updated notice dated {} titled {}.".format(
+				notice.print_time, notice.title))
 		logging.info('Updated notice dated %s titled %s.',
 				notice.print_time, notice.title)
-	print '{} notices updated.'.format(count)
+	tprint("{} notices updated.".format(count))
 	logging.info('%d notices updated.', count)
 
 # If run as a standalone script, run update()

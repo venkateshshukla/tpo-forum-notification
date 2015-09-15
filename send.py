@@ -14,6 +14,7 @@ import view
 import update
 from notice import Notice
 from notice_db import NoticeWrapper
+from util import tprint
 
 root = os.path.abspath(os.path.dirname(__file__))
 path = root + "/gen/json/"
@@ -53,11 +54,12 @@ def push(title, body):
 
 	logging.info("Recieved response status code : %d", response.status_code)
 	if response.status_code == 200:
-		print "Success"
+		tprint("Success")
 		logging.info("push successfully sent")
 		return True
 	else:
-		print "Failed,", response.status_code, response.reason
+		tprint("Failed, {} {}".format(response.status_code,
+			response.reason))
 		logging.error("sending push failed : %d : %s",
 				response.status_code, response.reason)
 		return False
@@ -75,7 +77,7 @@ def send_json(notice):
 	title = notice['title']
 	body = view.get_text_dict(notice, True)
 
-	print "Sending notice {} dated {}.".format(title, time)
+	tprint("Sending notice {} dated {}.".format(title, time))
 	logging.info("Sending notice %s dated %s.", title, time)
 
 	return push(title, body)
@@ -94,7 +96,7 @@ def send_notice(notice):
 	title = notice.title
 	body = view.get_text_notice(notice, True)
 
-	print "Sending notice {} dated {}.".format(title, time)
+	tprint("Sending notice {} dated {}.".format(title, time))
 	logging.info("Sending notice %s dated %s.", title, time)
 
 	return push(title, body)
@@ -150,10 +152,10 @@ def send_unsent():
 	for f in filelist:
 		if send_name(f):
 			send_count += 1
-			print "\r%d notifications sent."%send_count
+			tprint("\r{} notifications sent.".format(send_count))
 
 	if send_count == 0:
-		print "0 notifications sent."
+		tprint("0 notifications sent.")
 	else:
 		print ""
 
@@ -171,10 +173,10 @@ def send_unsent_db():
 		if send_notice(notice):
 			NoticeWrapper.sent(notice)
 			send_count += 1
-			print "\r%d notifications sent."%send_count
+			tprint("\r{} notifications sent.".format(send_count))
 
 	if send_count == 0:
-		print "0 notifications sent."
+		tprint("0 notifications sent.")
 	else:
 		print ""
 

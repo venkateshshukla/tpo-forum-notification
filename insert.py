@@ -8,6 +8,7 @@ import logging
 import extract
 from notice import Notice
 from notice_db import NoticeWrapper
+from util import tprint
 
 # Save the notices as json in gen/json folder by parsing gen/notice_board.html
 def insert(root = None):
@@ -33,7 +34,8 @@ def insert(root = None):
 			continue;
 		else:
 			count += 1
-			print "Saved notice dated '{}' titled '{}'.".format(notice['time'], notice['title'])
+			tprint("Saved notice dated '{}' titled '{}'.".format(
+				notice['time'],	notice['title']))
 			logging.info("Saved notice dated %s titled %s",
 					notice['time'], notice['title'])
 
@@ -58,15 +60,15 @@ def insert_db():
 	for notice in notices:
 		if NoticeWrapper.insert_dict_safe(notice):
 			count += 1
-			print "Added notice dated '{}' titled '{}'.".format(
-					notice['time'], notice['title'])
+			tprint("Added notice dated '{}' titled '{}'.".format(
+					notice['time'], notice['title']))
 			logging.info("Added notice dated %s titled %s",
 					notice['time'], notice['title'])
 			pass
 		else:
 			continue
 
-	print "{} notices inserted".format(count)
+	tprint( "{} notices inserted".format(count))
 	logging.info("%d notices inserted", count)
 	return count
 
@@ -84,6 +86,6 @@ if __name__ == '__main__':
 		num = insert()
 	if num is not None:
 		logging.info("saved %d notices", num)
-		print "Saved %d notices."%num
+		tprint( "Saved %d notices."%num)
 	logging.debug("finished %s", __file__)
 

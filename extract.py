@@ -8,6 +8,8 @@ from datetime import datetime
 import logging
 from unidecode import unidecode
 
+from util import tprint
+
 # Get timestamp from a time string
 def get_timestamp(s):
 	logging.debug("called : %s", __name__)
@@ -110,7 +112,7 @@ def get_notice_list(p):
 		logging.error("Error getting list items from div topics")
 		return None
 
-	print "%d notices retreived from the noticeboard"%len(list_li)
+	tprint("%d notices retreived from the noticeboard"%len(list_li))
 	logging.info("%d notices retreived from the noticeboard", len(list_li))
 
 	info = []
