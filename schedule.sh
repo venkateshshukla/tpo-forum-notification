@@ -1,14 +1,22 @@
 #!/bin/bash
+shopt -s expand_aliases
 
-LOGFILE="$HOME/external/tpo_forum.html"
-CMD="python run.py db"
-SLEEP="sleep 30"
+export TZ='Asia/Kolkata';
+export LOGDIR="$HOME/external/logs";
+export LOGFILE_TXT="$LOGDIR/tpo_forum_$(date +%Y%m%d).txt";
+export LOGFILE_HTML="$LOGDIR/tpo_forum_$(date +%Y%m%d).html";
+export FINISH_MSG="Work done. I'll sleep now.";
+export START_MSG="Begin";
 
-FINISH_MSG="Work done. I'll sleep now."
-START_MSG="Begin"
+alias DATE='date +"[ %Y-%m-%d %H:%M:%S.%6N ]"';
+alias CMD="python run.py db";
+alias SLEEP="sleep 30";
+alias EXP_LOGS="cat $LOGFILE_TXT | ccze -h";
 
-echo $(date  +"[ %Y-%m-%d %H:%M:%S.%6N ]") $START_MSG;
-$CMD | tee -a $LOGFILE;
-echo $(date  +"[ %Y-%m-%d %H:%M:%S.%6N ]") $FINISH_MSG;
-$SLEEP;
-echo ""
+echo $(DATE) $START_MSG | tee -a $LOGFILE_TXT;
+CMD | tee -a $LOGFILE_TXT;
+echo $(DATE) $FINISH_MSG | tee -a $LOGFILE_TXT;
+SLEEP;
+echo "" | tee -a $LOGFILE_TXT;
+
+EXP_LOGS > $LOGFILE_HTML;

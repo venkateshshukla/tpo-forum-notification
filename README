@@ -19,6 +19,7 @@ into the python dependencies
 postgresql database using python
 3. python-dev (debian based) or its equivalent in rhel based systems
 4. libffi-dev (debian based) or its equivalent in rhel based systems
+5. ccze (To beautify logs and export it in HTML)
 
 ** Python Dependencies **
 1. Requests - http://docs.python-requests.org/
